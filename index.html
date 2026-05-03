@@ -1,309 +1,587 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en" data-theme="dark">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Orbit — Turn homework chaos into tonight’s study plan</title>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Orbit — Turn messy schoolwork into tonight’s study plan</title>
   <meta
     name="description"
-    content="Orbit helps students brain dump homework, notes, and tasks, then turns them into a clear study plan for the night."
+    content="Orbit helps students turn messy homework, notes, reminders, and worksheets into a clear study plan for the night."
   />
   <link rel="stylesheet" href="style.css" />
 </head>
 
 <body>
-  <a class="skip-link" href="#planner">Skip to planner</a>
+  <a class="skip-link" href="#main">Skip to main content</a>
 
-  <div class="page-glow page-glow-one" aria-hidden="true"></div>
-  <div class="page-glow page-glow-two" aria-hidden="true"></div>
-
-  <header class="site-header" data-header>
-    <nav class="nav" aria-label="Main navigation">
+  <header class="site-header" id="top">
+    <nav class="nav container" aria-label="Primary navigation">
       <a class="brand" href="#top" aria-label="Orbit home">
-        <span class="brand-mark" aria-hidden="true">
-          <span class="brand-core"></span>
+        <span class="orbit-mark" aria-hidden="true">
+          <svg viewBox="0 0 64 64" role="img" focusable="false">
+            <ellipse class="orbit-path" cx="32" cy="32" rx="23" ry="12" transform="rotate(-28 32 32)" />
+            <circle class="orbit-core" cx="32" cy="32" r="8" />
+            <circle class="orbit-node" cx="50" cy="20" r="4" />
+            <path class="orbit-check" d="M28.7 32.3l2.4 2.5 4.5-5" />
+          </svg>
         </span>
-        <span>Orbit</span>
+        <span class="brand-name">Orbit</span>
       </a>
 
-      <button class="menu-toggle" type="button" aria-label="Open menu" aria-expanded="false" data-menu-toggle>
+      <button class="menu-toggle" id="menuToggle" type="button" aria-label="Open menu" aria-controls="navLinks" aria-expanded="false">
         <span></span>
         <span></span>
       </button>
 
-      <div class="nav-links" data-nav-links>
-        <a href="#planner">Planner</a>
-        <a href="#how">How it works</a>
+      <div class="nav-links" id="navLinks">
+        <a href="#product">Product</a>
+        <a href="#demo">Demo</a>
+        <a href="#first-five">First 5</a>
         <a href="#features">Features</a>
-        <button class="theme-toggle" type="button" data-theme-toggle aria-label="Toggle color theme">
-          <span data-theme-icon>☾</span>
-          <span data-theme-label>Dark</span>
+        <a href="#pricing">Pricing</a>
+        <a href="#faq">FAQ</a>
+      </div>
+
+      <div class="nav-actions">
+        <button class="ghost-button theme-toggle" id="themeToggle" type="button" aria-label="Switch theme">
+          Light
         </button>
+        <a class="small-cta" href="#demo">Try demo</a>
       </div>
     </nav>
   </header>
 
-  <main id="top">
+  <main id="main">
     <section class="hero section">
-      <div class="hero-copy reveal">
-        <p class="eyebrow">
-          <span class="pulse-dot" aria-hidden="true"></span>
-          After-school planning for tired brains
-        </p>
-
-        <h1>Come home. Dump the chaos. Know what to do tonight.</h1>
-
-        <p class="hero-text">
-          Orbit turns homework, notes, readings, and loose reminders into a calm study path with time blocks,
-          breaks, and a realistic finish line.
-        </p>
-
-        <div class="hero-actions" aria-label="Primary actions">
-          <a class="button button-primary" href="#planner">Build my plan</a>
-          <a class="button button-secondary" href="#how">See how it works</a>
-        </div>
-
-        <div class="hero-proof" aria-label="Orbit benefits">
-          <div>
-            <strong>3-step</strong>
-            <span>night reset</span>
-          </div>
-          <div>
-            <strong>Local</strong>
-            <span>browser save</span>
-          </div>
-          <div>
-            <strong>Mobile</strong>
-            <span>ready</span>
-          </div>
-        </div>
-      </div>
-
-      <div class="hero-visual reveal" aria-label="Orbit app preview">
-        <div class="orbit-shell">
-          <div class="orbit-ring ring-one" aria-hidden="true"></div>
-          <div class="orbit-ring ring-two" aria-hidden="true"></div>
-
-          <div class="mock-app">
-            <div class="mock-topbar">
-              <div>
-                <span class="tiny-label">Tonight</span>
-                <strong>Study Orbit</strong>
-              </div>
-              <span class="status-pill">Ready</span>
-            </div>
-
-            <div class="focus-card">
-              <div>
-                <span class="tiny-label">First move</span>
-                <h2>Math worksheet</h2>
-              </div>
-              <span class="time-chip">25m</span>
-            </div>
-
-            <div class="mini-timeline" aria-hidden="true">
-              <span style="--w: 38%"></span>
-              <span style="--w: 62%"></span>
-              <span style="--w: 46%"></span>
-            </div>
-
-            <div class="mini-cards">
-              <article>
-                <span>01</span>
-                <p>Sort tasks</p>
-              </article>
-              <article>
-                <span>02</span>
-                <p>Place breaks</p>
-              </article>
-              <article>
-                <span>03</span>
-                <p>Start focused</p>
-              </article>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <section id="planner" class="planner-section section">
-      <div class="section-heading reveal">
-        <p class="eyebrow">Try the planner</p>
-        <h2>Drop in everything on your mind.</h2>
-        <p>
-          Add one task per line. Orbit will estimate a practical study plan using your available time and energy level.
-        </p>
-      </div>
-
-      <div class="planner-grid">
-        <form class="planner-card input-card reveal" data-planner-form>
-          <div class="card-header">
-            <div>
-              <p class="eyebrow">Brain dump</p>
-              <h3>Homework, notes, tasks</h3>
-            </div>
-            <span class="save-state" data-save-state>Auto-saved locally</span>
-          </div>
-
-          <label class="sr-only" for="taskDump">Enter homework, notes, and tasks</label>
-          <textarea
-            id="taskDump"
-            name="taskDump"
-            data-task-dump
-            rows="10"
-            placeholder="Example:
-Math worksheet due tomorrow
-Read chapter 8 for history
-Study biology quiz notes
-English essay outline 45 min
-Pack gym clothes"
-          ></textarea>
-
-          <div class="controls-grid">
-            <label class="field">
-              <span>Energy tonight</span>
-              <select data-energy>
-                <option value="low">Low — keep it gentle</option>
-                <option value="medium" selected>Medium — balanced pace</option>
-                <option value="high">High — deeper focus</option>
-              </select>
-            </label>
-
-            <label class="field">
-              <span>Start time</span>
-              <input type="time" value="18:30" data-start-time />
-            </label>
-
-            <label class="field range-field">
-              <span>
-                Available time
-                <strong data-time-label>120 min</strong>
-              </span>
-              <input type="range" min="45" max="240" step="15" value="120" data-available-time />
-            </label>
-          </div>
-
-          <div class="planner-actions">
-            <button class="button button-primary" type="submit">Generate tonight’s plan</button>
-            <button class="button button-ghost" type="button" data-sample-button>Use sample</button>
-            <button class="button button-ghost danger" type="button" data-clear-button>Clear</button>
-          </div>
-
-          <p class="privacy-note">
-            This demo runs fully in your browser. It does not send your homework anywhere.
+      <div class="hero-grid container">
+        <div class="hero-copy reveal">
+          <p class="eyebrow">
+            <span class="pulse-dot" aria-hidden="true"></span>
+            Frontend-only planning demo · no fake AI claims
           </p>
-        </form>
 
-        <section class="planner-card result-card reveal" aria-live="polite" aria-label="Generated study plan">
-          <div class="card-header">
-            <div>
-              <p class="eyebrow">Tonight’s orbit</p>
-              <h3>Your plan</h3>
-            </div>
-            <button class="copy-button" type="button" data-copy-plan disabled>Copy plan</button>
+          <h1>Turn the after-school pile into tonight’s orbit.</h1>
+
+          <p class="hero-lede">
+            Orbit helps students dump messy homework, worksheets, notes, reminders, and tasks into one place,
+            then organizes the night into what to do first, what to review, and how long it should take.
+          </p>
+
+          <div class="hero-actions" aria-label="Primary actions">
+            <a class="primary-button" href="#demo">Generate a study plan</a>
+            <a class="secondary-button" href="#pricing">See honest pricing</a>
           </div>
 
-          <div class="plan-stats" data-plan-stats>
-            <div>
-              <span>Tasks</span>
-              <strong>0</strong>
-            </div>
-            <div>
-              <span>Focus</span>
-              <strong>0m</strong>
-            </div>
-            <div>
-              <span>Finish</span>
-              <strong>—</strong>
-            </div>
+          <div class="trust-strip" aria-label="Product safeguards">
+            <span>No backend</span>
+            <span>No payments</span>
+            <span>Local browser storage</span>
           </div>
-
-          <div class="empty-state" data-empty-state>
-            <div class="empty-orbit" aria-hidden="true"></div>
-            <h4>No plan yet</h4>
-            <p>Paste your homework list, choose your energy, then generate a clear path for the night.</p>
-          </div>
-
-          <div class="timeline" data-timeline hidden></div>
-        </section>
-      </div>
-    </section>
-
-    <section id="how" class="how-section section">
-      <div class="section-heading reveal">
-        <p class="eyebrow">How it works</p>
-        <h2>A simple reset after school.</h2>
-      </div>
-
-      <div class="steps-grid">
-        <article class="step-card reveal">
-          <span>01</span>
-          <h3>Dump everything</h3>
-          <p>No perfect formatting. Write the homework, reminders, notes, and due-soon stuff taking up space in your head.</p>
-        </article>
-
-        <article class="step-card reveal">
-          <span>02</span>
-          <h3>Orbit sorts the night</h3>
-          <p>The planner estimates time, prioritizes urgent study work, and fits tasks into the time you actually have.</p>
-        </article>
-
-        <article class="step-card reveal">
-          <span>03</span>
-          <h3>Start with one move</h3>
-          <p>You get a first task, a rhythm of breaks, and a clear finish point so the night feels possible.</p>
-        </article>
-      </div>
-    </section>
-
-    <section id="features" class="features-section section">
-      <div class="feature-panel reveal">
-        <div>
-          <p class="eyebrow">Why students use it</p>
-          <h2>Built for the moment when school follows you home.</h2>
         </div>
 
-        <div class="feature-list">
-          <article>
-            <span aria-hidden="true">✦</span>
-            <div>
-              <h3>Messy input friendly</h3>
-              <p>Orbit works with natural task lists instead of forcing you into a complicated system.</p>
-            </div>
-          </article>
+        <div class="hero-visual reveal" aria-label="Orbit product preview">
+          <div class="orbit-board">
+            <div class="board-glow" aria-hidden="true"></div>
 
-          <article>
-            <span aria-hidden="true">◐</span>
-            <div>
-              <h3>Energy-aware planning</h3>
-              <p>Low-energy nights get shorter focus blocks and more breathing room.</p>
+            <div class="board-topline">
+              <span>Tonight Plan</span>
+              <span class="status-pill">Organized</span>
             </div>
-          </article>
 
-          <article>
-            <span aria-hidden="true">⌁</span>
-            <div>
-              <h3>Honest static demo</h3>
-              <p>This version is frontend-only and ready for GitHub Pages. Real accounts or AI sync would need a backend.</p>
+            <div class="mess-stack" aria-label="Messy input examples">
+              <div class="mess-card tilted-left">
+                <span>math worksheet due tmrw</span>
+              </div>
+              <div class="mess-card">
+                <span>read history ch. 8 + quiz?</span>
+              </div>
+              <div class="mess-card tilted-right">
+                <span>english draft, vocab, pack lab sheet</span>
+              </div>
             </div>
-          </article>
+
+            <div class="orbit-divider">
+              <span></span>
+              <strong>Orbit sorts the night</strong>
+              <span></span>
+            </div>
+
+            <div class="plan-preview">
+              <div class="preview-row priority">
+                <span class="preview-number">01</span>
+                <div>
+                  <strong>Math first</strong>
+                  <small>35 min · due soon</small>
+                </div>
+              </div>
+              <div class="preview-row">
+                <span class="preview-number">02</span>
+                <div>
+                  <strong>English draft</strong>
+                  <small>30 min · deep work</small>
+                </div>
+              </div>
+              <div class="preview-row">
+                <span class="preview-number">03</span>
+                <div>
+                  <strong>History review</strong>
+                  <small>15 min · review queue</small>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </section>
 
-    <section class="final-cta section reveal">
-      <p class="eyebrow">Ready when the backpack hits the floor</p>
-      <h2>Give tonight a path before it becomes a spiral.</h2>
-      <a class="button button-primary" href="#planner">Plan tonight</a>
+    <section class="section product-section" id="product">
+      <div class="container">
+        <div class="section-heading reveal">
+          <p class="eyebrow">The problem</p>
+          <h2>Students do not need another blank planner.</h2>
+          <p>
+            After school, the hard part is not ambition. It is converting scattered assignments,
+            half-remembered reminders, and loose notes into the next obvious action.
+          </p>
+        </div>
+
+        <div class="flow-grid">
+          <article class="flow-card reveal">
+            <span class="flow-number">1</span>
+            <h3>Dump the mess</h3>
+            <p>Paste assignments, reminders, worksheet notes, due dates, and half-formed thoughts without organizing first.</p>
+          </article>
+
+          <article class="flow-card reveal">
+            <span class="flow-number">2</span>
+            <h3>Orbit detects structure</h3>
+            <p>The demo uses transparent JavaScript rules to identify subjects, urgency, review items, and rough study time.</p>
+          </article>
+
+          <article class="flow-card reveal">
+            <span class="flow-number">3</span>
+            <h3>Start the night</h3>
+            <p>Get a priority order, review queue, first five-minute action, and a focus plan that makes the next step obvious.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section demo-section" id="demo">
+      <div class="container">
+        <div class="section-heading narrow reveal">
+          <p class="eyebrow">Working frontend-only demo</p>
+          <h2>Paste the homework pile. Get a usable night plan.</h2>
+          <p>
+            This is a safe static demo. It does not call an AI API, upload files, read images, or send your schoolwork anywhere.
+            It simulates planning with local JavaScript rules.
+          </p>
+        </div>
+
+        <div class="demo-shell">
+          <section class="input-panel reveal" aria-labelledby="plannerTitle">
+            <div class="panel-header">
+              <div>
+                <p class="overline">Messy school dump</p>
+                <h3 id="plannerTitle">What came home today?</h3>
+              </div>
+              <span class="local-pill">Local only</span>
+            </div>
+
+            <label class="textarea-label" for="planInput">
+              Paste homework, notes, worksheets, reminders, or tasks
+            </label>
+            <textarea
+              id="planInput"
+              rows="12"
+              spellcheck="true"
+              placeholder="Example:
+- algebra worksheet p. 42 problems 1-18 due tomorrow
+- English essay intro paragraph
+- biology quiz Friday, review cell notes
+- history read chapter 8 and answer 5 questions
+- pack permission slip"
+            ></textarea>
+
+            <div class="demo-actions">
+              <button class="secondary-button" id="sampleInput" type="button">Use sample mess</button>
+              <button class="ghost-button" id="clearInput" type="button">Clear</button>
+              <button class="primary-button" id="generatePlan" type="button">Generate study plan</button>
+            </div>
+
+            <p class="input-hint" id="inputHint" aria-live="polite">
+              Tip: messy is fine. Put each assignment on its own line when possible.
+            </p>
+
+            <p class="usage-note" id="usageCount" aria-live="polite"></p>
+          </section>
+
+          <section class="result-panel reveal" id="resultPanel" aria-labelledby="resultTitle">
+            <div class="result-empty" id="resultEmpty">
+              <span class="empty-orbit" aria-hidden="true"></span>
+              <h3 id="resultTitle">Your plan will appear here.</h3>
+              <p>
+                Orbit will show detected subjects, priority order, estimated time,
+                first action, review queue, and a quick focus plan.
+              </p>
+            </div>
+
+            <div class="result-content" id="resultContent" hidden>
+              <div class="result-header">
+                <div>
+                  <p class="overline">Generated plan</p>
+                  <h3>Tonight’s study orbit</h3>
+                </div>
+                <div class="time-chip">
+                  <span id="totalTime">0 min</span>
+                  <small>estimated</small>
+                </div>
+              </div>
+
+              <div class="result-grid">
+                <article class="result-block">
+                  <h4>Detected subjects</h4>
+                  <div class="chip-list" id="subjectList"></div>
+                </article>
+
+                <article class="result-block accent-block">
+                  <h4>First 5-minute action</h4>
+                  <p id="firstActionText"></p>
+                </article>
+              </div>
+
+              <article class="result-block full">
+                <h4>Priority order</h4>
+                <ol class="priority-list" id="priorityList"></ol>
+              </article>
+
+              <div class="result-grid">
+                <article class="result-block">
+                  <h4>Review queue</h4>
+                  <ul class="simple-list" id="reviewQueue"></ul>
+                </article>
+
+                <article class="result-block">
+                  <h4>Quick focus plan</h4>
+                  <ul class="simple-list" id="focusPlan"></ul>
+                </article>
+              </div>
+
+              <article class="orbit-card" id="orbitCard" hidden>
+                <div class="orbit-card-top">
+                  <div>
+                    <p class="overline">Signature feature</p>
+                    <h4>Tonight Orbit Card</h4>
+                    <p>
+                      A local checklist for actually moving through the plan.
+                      Progress saves in this browser only.
+                    </p>
+                  </div>
+
+                  <div class="progress-ring" id="cardProgressRing" style="--progress: 0deg;" aria-label="Checklist progress">
+                    <span id="cardProgressValue">0%</span>
+                  </div>
+                </div>
+
+                <div class="card-meta">
+                  <span id="topTaskBadge">Top task</span>
+                  <span id="activeSubjectBadge">Subjects</span>
+                  <span id="generatedDate">Saved locally</span>
+                </div>
+
+                <ul class="checklist" id="cardChecklist"></ul>
+
+                <div class="card-actions">
+                  <button class="secondary-button" id="copyPlan" type="button">Copy plan</button>
+                  <button class="ghost-button" id="clearSavedPlan" type="button">Clear saved card</button>
+                </div>
+
+                <p class="save-status" id="saveStatus" aria-live="polite"></p>
+              </article>
+            </div>
+          </section>
+        </div>
+      </div>
+    </section>
+
+    <section class="section first-five-section" id="first-five">
+      <div class="container first-five-grid">
+        <div class="section-heading reveal">
+          <p class="eyebrow">The first 5 minutes</p>
+          <h2>The night gets easier when the first action is tiny.</h2>
+          <p>
+            Orbit is built around the moment students arrive home tired and overloaded.
+            Instead of asking for perfect planning, it creates the first small move.
+          </p>
+        </div>
+
+        <div class="first-five-card reveal">
+          <div class="first-five-timer" aria-hidden="true">
+            <span>5</span>
+            <small>min</small>
+          </div>
+
+          <div>
+            <h3>Start with this:</h3>
+            <p id="dynamicFiveAction">
+              Clear one workspace, put your phone away, open the assignment that feels most urgent,
+              and do the smallest visible step for five minutes.
+            </p>
+          </div>
+
+          <div class="micro-steps">
+            <span>Clear desk</span>
+            <span>Open top task</span>
+            <span>Start timer</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section features-section" id="features">
+      <div class="container">
+        <div class="section-heading narrow reveal">
+          <p class="eyebrow">Features</p>
+          <h2>Made for the real school-night workflow.</h2>
+          <p>
+            Orbit focuses on the few planning moments that matter most after school:
+            capture, order, start, review, and repeat.
+          </p>
+        </div>
+
+        <div class="feature-grid">
+          <article class="feature-card reveal">
+            <span class="feature-icon">↯</span>
+            <h3>Mess-tolerant capture</h3>
+            <p>Students can paste rough notes without cleaning them up first.</p>
+          </article>
+
+          <article class="feature-card reveal">
+            <span class="feature-icon">01</span>
+            <h3>Priority order</h3>
+            <p>Due-soon tasks, tests, worksheets, and projects move higher in the plan.</p>
+          </article>
+
+          <article class="feature-card reveal">
+            <span class="feature-icon">⟳</span>
+            <h3>Review queue</h3>
+            <p>Quizzes, tests, vocab, and study items become a short review list.</p>
+          </article>
+
+          <article class="feature-card reveal">
+            <span class="feature-icon">◷</span>
+            <h3>Focus blocks</h3>
+            <p>The night is broken into realistic sprints, breaks, and wrap-up time.</p>
+          </article>
+
+          <article class="feature-card reveal">
+            <span class="feature-icon">⌁</span>
+            <h3>Local progress</h3>
+            <p>The demo saves the current Orbit Card locally, no account required.</p>
+          </article>
+
+          <article class="feature-card reveal">
+            <span class="feature-icon">◇</span>
+            <h3>Honest roadmap</h3>
+            <p>Future AI extraction and image/PDF support are labeled as future features, not faked.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section pricing-section" id="pricing">
+      <div class="container">
+        <div class="section-heading narrow reveal">
+          <p class="eyebrow">Pricing and upgrade path</p>
+          <h2>Free to start. Paid plans fund better planning.</h2>
+          <p>
+            This static website does not process payments or collect cards. Pricing buttons open
+            an honest coming-soon message and can save plan interest locally in your browser.
+          </p>
+        </div>
+
+        <div class="pricing-grid">
+          <article class="pricing-card reveal">
+            <div class="pricing-top">
+              <h3>Free</h3>
+              <p>For trying Orbit after school.</p>
+            </div>
+            <div class="price">$0</div>
+            <ul>
+              <li>3 study plans per week</li>
+              <li>Basic planning</li>
+              <li>Local progress only</li>
+            </ul>
+            <button class="plan-button secondary-button pricing-action" type="button" data-plan="Free">
+              Start Free
+            </button>
+          </article>
+
+          <article class="pricing-card featured reveal">
+            <div class="pricing-badge">Most useful</div>
+            <div class="pricing-top">
+              <h3>Orbit Plus</h3>
+              <p>For students who plan most nights.</p>
+            </div>
+            <div class="price">$6<span>/mo</span></div>
+            <ul>
+              <li>Unlimited study plans</li>
+              <li>Saved study history</li>
+              <li>Better review tools</li>
+              <li>Focus mode</li>
+              <li>Weekly progress summary</li>
+            </ul>
+            <button class="plan-button primary-button pricing-action" type="button" data-plan="Orbit Plus">
+              Choose Plus
+            </button>
+          </article>
+
+          <article class="pricing-card reveal">
+            <div class="pricing-top">
+              <h3>Orbit Pro</h3>
+              <p>For power users and future advanced tools.</p>
+            </div>
+            <div class="price">$12<span>/mo</span></div>
+            <ul>
+              <li>Deeper planning</li>
+              <li>Advanced review queue</li>
+              <li>Priority support</li>
+              <li>Future AI extraction tools</li>
+              <li>Future image/PDF support</li>
+            </ul>
+            <button class="plan-button secondary-button pricing-action" type="button" data-plan="Orbit Pro">
+              Choose Pro
+            </button>
+          </article>
+        </div>
+
+        <div class="monetization-card reveal">
+          <div>
+            <p class="overline">Monetization, honestly</p>
+            <h3>What paid plans would actually fund</h3>
+          </div>
+          <p>
+            Orbit can be useful as a local planning tool today. Paid plans would support real accounts,
+            reliable saved history across devices, deeper review tools, future AI extraction, and future
+            image/PDF support. Those features require backend infrastructure and are not faked here.
+          </p>
+          <p class="pricing-interest" id="pricingInterestStatus" aria-live="polite"></p>
+        </div>
+      </div>
+    </section>
+
+    <section class="section faq-section" id="faq">
+      <div class="container faq-grid">
+        <div class="section-heading reveal">
+          <p class="eyebrow">FAQ</p>
+          <h2>Clear answers before launch.</h2>
+          <p>
+            Orbit’s promise is simple: help students know what to do first without pretending this static site is a full backend product.
+          </p>
+        </div>
+
+        <div class="faq-list">
+          <details class="faq-item reveal">
+            <summary>Does this demo use real AI?</summary>
+            <p>No. The demo uses transparent frontend JavaScript rules. A production version could add real AI later with a backend.</p>
+          </details>
+
+          <details class="faq-item reveal">
+            <summary>Does Orbit upload my schoolwork?</summary>
+            <p>No. This GitHub Pages version runs in your browser. The saved Orbit Card uses localStorage on your device only.</p>
+          </details>
+
+          <details class="faq-item reveal">
+            <summary>Can it read worksheets, images, or PDFs?</summary>
+            <p>Not in this static demo. Image/PDF support is listed as a future Pro feature because it would require additional infrastructure.</p>
+          </details>
+
+          <details class="faq-item reveal">
+            <summary>Are payments active?</summary>
+            <p>No. Pricing buttons only open a coming-soon modal. They do not collect payment, credit cards, passwords, or account information.</p>
+          </details>
+
+          <details class="faq-item reveal">
+            <summary>Why use Orbit instead of a normal to-do list?</summary>
+            <p>A to-do list stores tasks. Orbit turns the pile into a sequence: what matters first, how long it may take, and how to start.</p>
+          </details>
+        </div>
+      </div>
+    </section>
+
+    <section class="section final-cta-section">
+      <div class="container">
+        <div class="final-cta reveal">
+          <div>
+            <p class="eyebrow">Ready for tonight?</p>
+            <h2>Dump the school day. Start the next five minutes.</h2>
+            <p>
+              Try the static planner, generate a Tonight Orbit Card, and feel what the product does before any account or payment exists.
+            </p>
+          </div>
+
+          <div class="final-actions">
+            <a class="primary-button" href="#demo">Generate my first plan</a>
+            <a class="secondary-button" href="#pricing">View plans</a>
+          </div>
+        </div>
+      </div>
     </section>
   </main>
 
-  <footer class="footer">
-    <p>© <span data-year></span> Orbit. A calm study-planning concept for students.</p>
-    <a href="#top">Back to top</a>
+  <footer class="site-footer">
+    <div class="container footer-grid">
+      <a class="brand footer-brand" href="#top" aria-label="Orbit home">
+        <span class="orbit-mark" aria-hidden="true">
+          <svg viewBox="0 0 64 64" role="img" focusable="false">
+            <ellipse class="orbit-path" cx="32" cy="32" rx="23" ry="12" transform="rotate(-28 32 32)" />
+            <circle class="orbit-core" cx="32" cy="32" r="8" />
+            <circle class="orbit-node" cx="50" cy="20" r="4" />
+            <path class="orbit-check" d="M28.7 32.3l2.4 2.5 4.5-5" />
+          </svg>
+        </span>
+        <span class="brand-name">Orbit</span>
+      </a>
+
+      <p>
+        A static GitHub Pages product site and frontend demo.
+        No backend, no API keys, no real payments.
+      </p>
+
+      <div class="footer-links">
+        <a href="#product">Product</a>
+        <a href="#demo">Demo</a>
+        <a href="#pricing">Pricing</a>
+        <a href="#faq">FAQ</a>
+      </div>
+    </div>
   </footer>
 
-  <div class="toast" role="status" aria-live="polite" data-toast hidden></div>
+  <div class="modal" id="pricingModal" hidden>
+    <div class="modal-backdrop" data-close-modal></div>
+
+    <div class="modal-panel" role="dialog" aria-modal="true" aria-labelledby="modalTitle" tabindex="-1">
+      <button class="modal-close" type="button" aria-label="Close modal" data-close-modal>×</button>
+
+      <p class="eyebrow">Payments coming soon</p>
+      <h2 id="modalTitle">Orbit plan</h2>
+      <p id="modalText">
+        This static GitHub Pages site does not process payments.
+      </p>
+
+      <div class="modal-note">
+        <strong>No checkout here.</strong>
+        <span>No credit card fields, no fake subscription, and no account creation. You can save plan interest locally in this browser.</span>
+      </div>
+
+      <div class="modal-actions">
+        <button class="primary-button" id="saveInterest" type="button">Save interest locally</button>
+        <button class="secondary-button" type="button" data-close-modal>Close</button>
+      </div>
+
+      <p class="save-status" id="interestStatus" aria-live="polite"></p>
+    </div>
+  </div>
 
   <script src="script.js"></script>
 </body>
