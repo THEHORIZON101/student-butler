@@ -1,523 +1,1045 @@
-const storageKey = "orbit-planner-state-v1";
-const themeKey = "orbit-theme-v1";
+(() => {
+  "use strict";
 
-const elements = {
-  header: document.querySelector("[data-header]"),
-  menuToggle: document.querySelector("[data-menu-toggle]"),
-  navLinks: document.querySelector("[data-nav-links]"),
-  themeToggle: document.querySelector("[data-theme-toggle]"),
-  themeIcon: document.querySelector("[data-theme-icon]"),
-  themeLabel: document.querySelector("[data-theme-label]"),
-  year: document.querySelector("[data-year]"),
+  const STORAGE_KEYS = {
+    theme: "orbit.theme",
+    card: "orbit.tonightCard",
+    usage: "orbit.weeklyUsage",
+    pricing: "orbit.pricingInterest"
+  };
 
-  form: document.querySelector("[data-planner-form]"),
-  taskDump: document.querySelector("[data-task-dump]"),
-  energy: document.querySelector("[data-energy]"),
-  startTime: document.querySelector("[data-start-time]"),
-  availableTime: document.querySelector("[data-available-time]"),
-  timeLabel: document.querySelector("[data-time-label]"),
-  saveState: document.querySelector("[data-save-state]"),
+  const sampleMess = `- algebra worksheet p. 42 problems 1-18 due tomorrow
+- English essay intro paragraph and thesis
+- biology quiz Friday, review cell notes and vocab
+- history read chapter 8 and answer 5 questions
+- Spanish vocab practice
+- pack permission slip for tomorrow`;
 
-  sampleButton: document.querySelector("[data-sample-button]"),
-  clearButton: document.querySelector("[data-clear-button]"),
-  copyButton: document.querySelector("[data-copy-plan]"),
-
-  planStats: document.querySelector("[data-plan-stats]"),
-  emptyState: document.querySelector("[data-empty-state]"),
-  timeline: document.querySelector("[data-timeline]"),
-  toast: document.querySelector("[data-toast]")
-};
-
-const sampleDump = `Math worksheet due tomorrow
-Study biology quiz notes 35 min
-Read chapter 8 for history
-English essay outline 45 min
-Review Spanish vocabulary
-Pack gym clothes`;
-
-let latestPlanText = "";
-
-function init() {
-  elements.year.textContent = new Date().getFullYear();
-
-  restoreTheme();
-  restorePlannerState();
-  updateTimeLabel();
-
-  bindEvents();
-  observeReveals();
-  handleHeaderScroll();
-}
-
-function bindEvents() {
-  window.addEventListener("scroll", handleHeaderScroll, { passive: true });
-
-  elements.menuToggle.addEventListener("click", toggleMenu);
-  elements.navLinks.addEventListener("click", (event) => {
-    const target = event.target;
-    if (target instanceof HTMLAnchorElement) {
-      closeMenu();
+  const subjectRules = [
+    {
+      name: "Math",
+      keywords: [
+        "math",
+        "algebra",
+        "geometry",
+        "calculus",
+        "equation",
+        "graph",
+        "fraction",
+        "derivative",
+        "proof",
+        "problem set",
+        "problems"
+      ]
+    },
+    {
+      name: "English",
+      keywords: [
+        "english",
+        "essay",
+        "reading",
+        "novel",
+        "book",
+        "literature",
+        "annotation",
+        "annotate",
+        "poem",
+        "draft",
+        "thesis",
+        "paragraph"
+      ]
+    },
+    {
+      name: "Science",
+      keywords: [
+        "science",
+        "biology",
+        "bio",
+        "chemistry",
+        "chem",
+        "physics",
+        "lab",
+        "experiment",
+        "molecule",
+        "cell",
+        "force",
+        "vocab"
+      ]
+    },
+    {
+      name: "History",
+      keywords: [
+        "history",
+        "social studies",
+        "government",
+        "civics",
+        "world war",
+        "timeline",
+        "source analysis",
+        "primary source"
+      ]
+    },
+    {
+      name: "Language",
+      keywords: [
+        "spanish",
+        "french",
+        "german",
+        "latin",
+        "language",
+        "vocabulary",
+        "conjugation",
+        "vocab practice"
+      ]
+    },
+    {
+      name: "Elective",
+      keywords: [
+        "art",
+        "music",
+        "band",
+        "choir",
+        "health",
+        "computer",
+        "coding",
+        "robotics",
+        "elective"
+      ]
     }
-  });
-
-  elements.themeToggle.addEventListener("click", toggleTheme);
-
-  elements.availableTime.addEventListener("input", () => {
-    updateTimeLabel();
-    savePlannerState();
-  });
-
-  [elements.taskDump, elements.energy, elements.startTime].forEach((element) => {
-    element.addEventListener("input", savePlannerState);
-    element.addEventListener("change", savePlannerState);
-  });
-
-  elements.form.addEventListener("submit", (event) => {
-    event.preventDefault();
-    generatePlan();
-  });
-
-  elements.sampleButton.addEventListener("click", () => {
-    elements.taskDump.value = sampleDump;
-    elements.energy.value = "medium";
-    elements.availableTime.value = "135";
-    elements.startTime.value = "18:30";
-    updateTimeLabel();
-    savePlannerState();
-    showToast("Sample added. Generate the plan when ready.");
-    elements.taskDump.focus();
-  });
-
-  elements.clearButton.addEventListener("click", () => {
-    elements.taskDump.value = "";
-    localStorage.removeItem(storageKey);
-    latestPlanText = "";
-    renderEmptyPlan();
-    showToast("Planner cleared.");
-    elements.taskDump.focus();
-  });
-
-  elements.copyButton.addEventListener("click", copyPlan);
-}
-
-function handleHeaderScroll() {
-  elements.header.classList.toggle("is-scrolled", window.scrollY > 10);
-}
-
-function toggleMenu() {
-  const isOpen = document.body.classList.toggle("menu-open");
-  elements.menuToggle.setAttribute("aria-expanded", String(isOpen));
-  elements.menuToggle.setAttribute("aria-label", isOpen ? "Close menu" : "Open menu");
-}
-
-function closeMenu() {
-  document.body.classList.remove("menu-open");
-  elements.menuToggle.setAttribute("aria-expanded", "false");
-  elements.menuToggle.setAttribute("aria-label", "Open menu");
-}
-
-function restoreTheme() {
-  const savedTheme = localStorage.getItem(themeKey);
-  const prefersLight = window.matchMedia("(prefers-color-scheme: light)").matches;
-  const theme = savedTheme || (prefersLight ? "light" : "dark");
-
-  document.documentElement.setAttribute("data-theme", theme);
-  updateThemeButton(theme);
-}
-
-function toggleTheme() {
-  const currentTheme = document.documentElement.getAttribute("data-theme") || "dark";
-  const nextTheme = currentTheme === "dark" ? "light" : "dark";
-
-  document.documentElement.setAttribute("data-theme", nextTheme);
-  localStorage.setItem(themeKey, nextTheme);
-  updateThemeButton(nextTheme);
-}
-
-function updateThemeButton(theme) {
-  const isDark = theme === "dark";
-  elements.themeIcon.textContent = isDark ? "☾" : "☼";
-  elements.themeLabel.textContent = isDark ? "Dark" : "Light";
-}
-
-function restorePlannerState() {
-  const rawState = localStorage.getItem(storageKey);
-  if (!rawState) return;
-
-  try {
-    const state = JSON.parse(rawState);
-
-    elements.taskDump.value = typeof state.taskDump === "string" ? state.taskDump : "";
-    elements.energy.value = state.energy || "medium";
-    elements.startTime.value = state.startTime || "18:30";
-    elements.availableTime.value = state.availableTime || "120";
-  } catch {
-    localStorage.removeItem(storageKey);
-  }
-}
-
-function savePlannerState() {
-  const state = {
-    taskDump: elements.taskDump.value,
-    energy: elements.energy.value,
-    startTime: elements.startTime.value,
-    availableTime: elements.availableTime.value
-  };
-
-  localStorage.setItem(storageKey, JSON.stringify(state));
-  flashSavedState();
-}
-
-function flashSavedState() {
-  elements.saveState.textContent = "Saved locally";
-  window.clearTimeout(flashSavedState.timeoutId);
-
-  flashSavedState.timeoutId = window.setTimeout(() => {
-    elements.saveState.textContent = "Auto-saved locally";
-  }, 1400);
-}
-
-function updateTimeLabel() {
-  elements.timeLabel.textContent = `${elements.availableTime.value} min`;
-}
-
-function parseTasks(rawText) {
-  return rawText
-    .split("\n")
-    .map((line) => line.trim())
-    .filter(Boolean)
-    .map((line, index) => createTaskFromLine(line, index))
-    .sort((a, b) => b.priority - a.priority || b.minutes - a.minutes);
-}
-
-function createTaskFromLine(line, index) {
-  const lower = line.toLowerCase();
-  const explicitMinutes = extractMinutes(lower);
-
-  const subject = detectSubject(lower);
-  const priority = detectPriority(lower);
-  const minutes = explicitMinutes || estimateMinutes(lower);
-
-  return {
-    id: `task-${index}`,
-    title: cleanTaskTitle(line),
-    subject,
-    priority,
-    minutes
-  };
-}
-
-function extractMinutes(text) {
-  const hourMatch = text.match(/(\d+(?:\.\d+)?)\s*(hr|hrs|hour|hours)\b/);
-  if (hourMatch) {
-    return Math.round(Number(hourMatch[1]) * 60);
-  }
-
-  const minuteMatch = text.match(/(\d+)\s*(m|min|mins|minute|minutes)\b/);
-  if (minuteMatch) {
-    return Number(minuteMatch[1]);
-  }
-
-  return null;
-}
-
-function detectSubject(text) {
-  const subjects = [
-    ["Math", ["math", "algebra", "geometry", "calculus", "worksheet"]],
-    ["Science", ["science", "bio", "biology", "chem", "chemistry", "physics", "lab"]],
-    ["English", ["english", "essay", "reading", "book", "literature", "outline"]],
-    ["History", ["history", "chapter", "social studies", "government"]],
-    ["Language", ["spanish", "french", "vocabulary", "vocab", "latin"]],
-    ["Personal", ["pack", "email", "permission", "form", "club", "practice"]]
   ];
 
-  const match = subjects.find(([, keywords]) => keywords.some((keyword) => text.includes(keyword)));
-  return match ? match[0] : "General";
-}
+  const $ = (selector, root = document) => root.querySelector(selector);
+  const $$ = (selector, root = document) => Array.from(root.querySelectorAll(selector));
 
-function detectPriority(text) {
-  let score = 1;
+  const dom = {
+    menuToggle: $("#menuToggle"),
+    navLinks: $("#navLinks"),
+    themeToggle: $("#themeToggle"),
 
-  if (text.includes("due tomorrow") || text.includes("tomorrow")) score += 5;
-  if (text.includes("tonight") || text.includes("due")) score += 3;
-  if (text.includes("quiz") || text.includes("test") || text.includes("exam")) score += 4;
-  if (text.includes("project") || text.includes("essay")) score += 3;
-  if (text.includes("study") || text.includes("review")) score += 2;
-  if (text.includes("pack") || text.includes("bring")) score -= 1;
+    planInput: $("#planInput"),
+    sampleInput: $("#sampleInput"),
+    clearInput: $("#clearInput"),
+    generatePlan: $("#generatePlan"),
+    inputHint: $("#inputHint"),
+    usageCount: $("#usageCount"),
 
-  return score;
-}
+    resultEmpty: $("#resultEmpty"),
+    resultContent: $("#resultContent"),
+    subjectList: $("#subjectList"),
+    priorityList: $("#priorityList"),
+    totalTime: $("#totalTime"),
+    firstActionText: $("#firstActionText"),
+    reviewQueue: $("#reviewQueue"),
+    focusPlan: $("#focusPlan"),
+    dynamicFiveAction: $("#dynamicFiveAction"),
 
-function estimateMinutes(text) {
-  if (text.includes("project")) return 55;
-  if (text.includes("essay")) return 45;
-  if (text.includes("test") || text.includes("exam")) return 45;
-  if (text.includes("quiz") || text.includes("study")) return 35;
-  if (text.includes("read") || text.includes("chapter")) return 30;
-  if (text.includes("worksheet") || text.includes("problem")) return 28;
-  if (text.includes("review") || text.includes("notes")) return 25;
-  if (text.includes("pack") || text.includes("bring")) return 8;
+    orbitCard: $("#orbitCard"),
+    cardChecklist: $("#cardChecklist"),
+    cardProgressRing: $("#cardProgressRing"),
+    cardProgressValue: $("#cardProgressValue"),
+    copyPlan: $("#copyPlan"),
+    clearSavedPlan: $("#clearSavedPlan"),
+    saveStatus: $("#saveStatus"),
+    topTaskBadge: $("#topTaskBadge"),
+    activeSubjectBadge: $("#activeSubjectBadge"),
+    generatedDate: $("#generatedDate"),
 
-  return 22;
-}
+    pricingModal: $("#pricingModal"),
+    modalTitle: $("#modalTitle"),
+    modalText: $("#modalText"),
+    saveInterest: $("#saveInterest"),
+    interestStatus: $("#interestStatus"),
+    pricingInterestStatus: $("#pricingInterestStatus")
+  };
 
-function cleanTaskTitle(line) {
-  return line
-    .replace(/\b\d+(?:\.\d+)?\s*(hr|hrs|hour|hours|m|min|mins|minute|minutes)\b/gi, "")
-    .replace(/\s{2,}/g, " ")
-    .trim();
-}
+  const storage = {
+    get(key, fallback) {
+      try {
+        const value = window.localStorage.getItem(key);
+        return value ? JSON.parse(value) : fallback;
+      } catch {
+        return fallback;
+      }
+    },
 
-function generatePlan() {
-  const tasks = parseTasks(elements.taskDump.value);
+    set(key, value) {
+      try {
+        window.localStorage.setItem(key, JSON.stringify(value));
+        return true;
+      } catch {
+        return false;
+      }
+    },
 
-  if (!tasks.length) {
-    renderEmptyPlan();
-    showToast("Add at least one task first.");
-    elements.taskDump.focus();
-    return;
+    remove(key) {
+      try {
+        window.localStorage.removeItem(key);
+        return true;
+      } catch {
+        return false;
+      }
+    }
+  };
+
+  let currentCard = null;
+  let selectedPricingPlan = "";
+  let lastFocusedElement = null;
+
+  function init() {
+    bindTheme();
+    bindNavigation();
+    bindPlannerDemo();
+    bindPricingModal();
+    hydrateSavedPlan();
+    updateUsageText();
+    updatePricingInterestText();
+    revealOnScroll();
   }
 
-  const availableMinutes = Number(elements.availableTime.value);
-  const energy = elements.energy.value;
-  const startMinutes = timeToMinutes(elements.startTime.value);
+  function bindTheme() {
+    const savedTheme = storage.get(STORAGE_KEYS.theme, null);
+    const prefersLight = window.matchMedia && window.matchMedia("(prefers-color-scheme: light)").matches;
+    const initialTheme = savedTheme || (prefersLight ? "light" : "dark");
 
-  const plan = buildPlan(tasks, availableMinutes, startMinutes, energy);
-  renderPlan(plan);
-  savePlannerState();
-  showToast("Tonight’s study orbit is ready.");
-}
+    applyTheme(initialTheme);
 
-function buildPlan(tasks, availableMinutes, startMinutes, energy) {
-  const settings = getEnergySettings(energy);
-  const blocks = [];
-  const overflow = [];
+    dom.themeToggle.addEventListener("click", () => {
+      const nextTheme = document.documentElement.dataset.theme === "light" ? "dark" : "light";
+      applyTheme(nextTheme);
+      storage.set(STORAGE_KEYS.theme, nextTheme);
+    });
+  }
 
-  let cursor = startMinutes;
-  let usedMinutes = 0;
-  let focusSinceBreak = 0;
+  function applyTheme(theme) {
+    const safeTheme = theme === "light" ? "light" : "dark";
+    document.documentElement.dataset.theme = safeTheme;
+    dom.themeToggle.textContent = safeTheme === "light" ? "Dark" : "Light";
+    dom.themeToggle.setAttribute(
+      "aria-label",
+      safeTheme === "light" ? "Switch to dark mode" : "Switch to light mode"
+    );
+  }
 
-  tasks.forEach((task) => {
-    if (usedMinutes + task.minutes > availableMinutes) {
-      overflow.push(task);
+  function bindNavigation() {
+    dom.menuToggle.addEventListener("click", () => {
+      const isOpen = dom.navLinks.classList.toggle("is-open");
+      dom.menuToggle.setAttribute("aria-expanded", String(isOpen));
+      dom.menuToggle.setAttribute("aria-label", isOpen ? "Close menu" : "Open menu");
+    });
+
+    $$("#navLinks a").forEach((link) => {
+      link.addEventListener("click", () => {
+        dom.navLinks.classList.remove("is-open");
+        dom.menuToggle.setAttribute("aria-expanded", "false");
+        dom.menuToggle.setAttribute("aria-label", "Open menu");
+      });
+    });
+  }
+
+  function bindPlannerDemo() {
+    dom.sampleInput.addEventListener("click", () => {
+      dom.planInput.value = sampleMess;
+      setHint("Sample mess loaded. You can edit it or generate the plan.", "success");
+      dom.planInput.focus();
+    });
+
+    dom.clearInput.addEventListener("click", () => {
+      dom.planInput.value = "";
+      setHint("Cleared. Paste a few assignments to build a new plan.", "neutral");
+      dom.planInput.focus();
+    });
+
+    dom.generatePlan.addEventListener("click", handleGeneratePlan);
+
+    dom.planInput.addEventListener("keydown", (event) => {
+      if ((event.metaKey || event.ctrlKey) && event.key === "Enter") {
+        event.preventDefault();
+        handleGeneratePlan();
+      }
+    });
+
+    dom.copyPlan.addEventListener("click", copyCurrentPlan);
+    dom.clearSavedPlan.addEventListener("click", clearSavedCard);
+  }
+
+  function handleGeneratePlan() {
+    const text = dom.planInput.value.trim();
+
+    if (!text) {
+      setHint("Paste at least one assignment, reminder, or note before generating.", "warn");
+      dom.planInput.focus();
       return;
     }
 
-    if (focusSinceBreak >= settings.breakAfter && usedMinutes + settings.breakLength + task.minutes <= availableMinutes) {
-      blocks.push({
-        type: "break",
-        title: "Reset break",
-        description: "Stand up, refill water, and get away from the screen for a few minutes.",
-        minutes: settings.breakLength,
-        start: cursor,
-        end: cursor + settings.breakLength,
-        tag: `${settings.breakLength} min break`
-      });
+    const plan = buildPlan(text);
+    const checked = new Array(plan.checklist.length).fill(false);
 
-      cursor += settings.breakLength;
-      usedMinutes += settings.breakLength;
-      focusSinceBreak = 0;
-    }
+    renderPlan(plan);
+    renderOrbitCard(plan, checked);
+    saveCard(plan, checked);
+    markPlanUsed();
 
-    blocks.push({
-      type: "focus",
-      title: task.title,
-      description: `${task.subject} · estimated focus block based on your brain dump.`,
-      minutes: task.minutes,
-      start: cursor,
-      end: cursor + task.minutes,
-      tag: `${task.minutes} min focus`
+    setHint("Plan generated locally. Nothing was uploaded or sent to a server.", "success");
+
+    dom.resultContent.scrollIntoView({
+      behavior: "smooth",
+      block: "nearest"
     });
-
-    cursor += task.minutes;
-    usedMinutes += task.minutes;
-    focusSinceBreak += task.minutes;
-  });
-
-  overflow.forEach((task) => {
-    blocks.push({
-      type: "overflow",
-      title: task.title,
-      description: `${task.subject} · not enough room tonight. Move this to tomorrow or shorten another block.`,
-      minutes: task.minutes,
-      start: null,
-      end: null,
-      tag: "Save for later"
-    });
-  });
-
-  return {
-    blocks,
-    tasks,
-    overflow,
-    focusMinutes: tasks.reduce((sum, task) => sum + task.minutes, 0),
-    plannedMinutes: usedMinutes,
-    finishMinutes: cursor,
-    startMinutes,
-    availableMinutes
-  };
-}
-
-function getEnergySettings(energy) {
-  const settings = {
-    low: { breakAfter: 45, breakLength: 10 },
-    medium: { breakAfter: 60, breakLength: 10 },
-    high: { breakAfter: 75, breakLength: 8 }
-  };
-
-  return settings[energy] || settings.medium;
-}
-
-function renderPlan(plan) {
-  elements.emptyState.hidden = true;
-  elements.timeline.hidden = false;
-  elements.copyButton.disabled = false;
-
-  elements.timeline.replaceChildren();
-
-  plan.blocks.forEach((block, index) => {
-    const item = createTimelineItem(block, index);
-    elements.timeline.appendChild(item);
-  });
-
-  updateStats(plan);
-  latestPlanText = planToText(plan);
-}
-
-function createTimelineItem(block, index) {
-  const item = document.createElement("article");
-  item.className = `timeline-item ${block.type}`;
-  item.style.animationDelay = `${Math.min(index * 55, 420)}ms`;
-
-  const time = document.createElement("div");
-  time.className = "timeline-time";
-
-  if (block.start === null) {
-    time.textContent = "Later";
-  } else {
-    time.textContent = `${minutesToTime(block.start)} – ${minutesToTime(block.end)}`;
   }
 
-  const content = document.createElement("div");
-  content.className = "timeline-content";
+  function buildPlan(text) {
+    const lines = normalizeLines(text);
+    const tasks = lines.map(createTask).sort(sortByPriority);
 
-  const title = document.createElement("strong");
-  title.textContent = block.title;
+    if (!tasks.length) {
+      tasks.push(createTask("General study review for tonight"));
+    }
 
-  const description = document.createElement("p");
-  description.textContent = block.description;
+    const subjects = unique(tasks.map((task) => task.subject));
+    const totalTime = roundToNearestFive(tasks.reduce((sum, task) => sum + task.minutes, 0));
+    const firstAction = buildFirstAction(tasks[0]);
+    const reviewQueue = buildReviewQueue(tasks);
+    const focusPlan = buildFocusPlan(tasks, totalTime);
+    const checklist = buildChecklist(tasks, firstAction, reviewQueue);
 
-  const tag = document.createElement("span");
-  tag.className = "timeline-tag";
-  tag.textContent = block.tag;
+    return {
+      id: `orbit-${Date.now()}`,
+      createdAt: new Date().toISOString(),
+      subjects,
+      tasks,
+      totalTime,
+      firstAction,
+      reviewQueue,
+      focusPlan,
+      checklist
+    };
+  }
 
-  content.append(title, description, tag);
-  item.append(time, content);
+  function normalizeLines(text) {
+    const bulletCleaned = text
+      .replace(/\r/g, "\n")
+      .replace(/[•●]/g, "\n")
+      .replace(/\s+-\s+/g, "\n- ");
 
-  return item;
-}
+    let lines = bulletCleaned
+      .split(/\n|;/)
+      .map(cleanLine)
+      .filter(Boolean);
 
-function renderEmptyPlan() {
-  elements.timeline.replaceChildren();
-  elements.timeline.hidden = true;
-  elements.emptyState.hidden = false;
-  elements.copyButton.disabled = true;
+    if (lines.length === 1 && lines[0].length > 110) {
+      lines = lines[0]
+        .split(/\.\s+|\?\s+|!\s+/)
+        .map(cleanLine)
+        .filter(Boolean);
+    }
 
-  latestPlanText = "";
+    return lines.slice(0, 12);
+  }
 
-  const statValues = elements.planStats.querySelectorAll("strong");
-  statValues[0].textContent = "0";
-  statValues[1].textContent = "0m";
-  statValues[2].textContent = "—";
-}
+  function cleanLine(line) {
+    return line
+      .replace(/^\s*[-*–—\d.)]+/, "")
+      .replace(/\s+/g, " ")
+      .trim();
+  }
 
-function updateStats(plan) {
-  const statValues = elements.planStats.querySelectorAll("strong");
-  const plannedFocus = plan.blocks
-    .filter((block) => block.type === "focus")
-    .reduce((sum, block) => sum + block.minutes, 0);
+  function createTask(line, index = 0) {
+    const lower = line.toLowerCase();
+    const subject = inferSubject(lower);
+    const reasons = [];
+    let score = 20 + Math.max(0, 8 - index);
+    let minutes = 20;
 
-  statValues[0].textContent = String(plan.tasks.length);
-  statValues[1].textContent = `${plannedFocus}m`;
-  statValues[2].textContent = minutesToTime(plan.finishMinutes);
-}
+    if (/(due|tomorrow|tonight|tonite|before|by\s+\w+|monday|tuesday|wednesday|thursday|friday)/i.test(lower)) {
+      score += 38;
+      minutes += 5;
+      reasons.push("due soon");
+    }
 
-function planToText(plan) {
-  const lines = ["Orbit study plan"];
+    if (/(quiz|test|exam|assessment)/i.test(lower)) {
+      score += 34;
+      minutes += 18;
+      reasons.push("review risk");
+    }
 
-  plan.blocks.forEach((block) => {
-    if (block.start === null) {
-      lines.push(`Later: ${block.title} (${block.tag})`);
+    if (/(worksheet|packet|problem set|problems|questions|exercise)/i.test(lower)) {
+      score += 20;
+      minutes += 14;
+      reasons.push("work block");
+    }
+
+    if (/(essay|draft|project|presentation|lab report|slides)/i.test(lower)) {
+      score += 24;
+      minutes += 24;
+      reasons.push("deep work");
+    }
+
+    if (/(read|chapter|pages|p\.)/i.test(lower)) {
+      score += 10;
+      minutes += 12;
+      reasons.push("reading");
+    }
+
+    if (/(study|review|vocab|vocabulary|flashcards|notes)/i.test(lower)) {
+      score += 16;
+      minutes += 10;
+      reasons.push("review");
+    }
+
+    if (/(missing|late|redo|make up|makeup|finish)/i.test(lower)) {
+      score += 24;
+      minutes += 12;
+      reasons.push("unfinished");
+    }
+
+    if (/(quick|easy|short|small)/i.test(lower)) {
+      minutes -= 8;
+      score += 4;
+      reasons.push("quick win");
+    }
+
+    minutes += estimateVolumeMinutes(lower);
+    minutes = clamp(roundToNearestFive(minutes), 10, 80);
+
+    if (!reasons.length) {
+      reasons.push("momentum");
+    }
+
+    return {
+      id: `task-${index}-${hashString(line)}`,
+      title: shorten(line, 92),
+      subject,
+      score,
+      minutes,
+      reasons: unique(reasons).slice(0, 3)
+    };
+  }
+
+  function inferSubject(lowerLine) {
+    let best = {
+      name: "General",
+      hits: 0
+    };
+
+    subjectRules.forEach((rule) => {
+      const hits = rule.keywords.reduce((count, keyword) => {
+        return lowerLine.includes(keyword) ? count + 1 : count;
+      }, 0);
+
+      if (hits > best.hits) {
+        best = {
+          name: rule.name,
+          hits
+        };
+      }
+    });
+
+    return best.hits ? best.name : "General";
+  }
+
+  function estimateVolumeMinutes(lowerLine) {
+    let extra = 0;
+
+    const pageRange = lowerLine.match(/(?:page|pages|p\.)\s*(\d+)\s*[-–]\s*(\d+)/);
+    if (pageRange) {
+      const start = Number(pageRange[1]);
+      const end = Number(pageRange[2]);
+      if (Number.isFinite(start) && Number.isFinite(end) && end > start) {
+        extra += Math.min(25, Math.ceil((end - start) / 2));
+      }
+    }
+
+    const itemCount = lowerLine.match(/(\d+)\s*(problems|questions|terms|flashcards)/);
+    if (itemCount) {
+      const count = Number(itemCount[1]);
+      if (Number.isFinite(count)) {
+        extra += Math.min(25, Math.ceil(count / 3));
+      }
+    }
+
+    return extra;
+  }
+
+  function sortByPriority(a, b) {
+    if (b.score !== a.score) {
+      return b.score - a.score;
+    }
+
+    return b.minutes - a.minutes;
+  }
+
+  function buildFirstAction(topTask) {
+    const subjectPhrase = topTask.subject === "General" ? "your top assignment" : `${topTask.subject} materials`;
+
+    return `Set a 5-minute timer, open ${subjectPhrase}, and complete the smallest visible step for “${topTask.title}.” Stop when the timer ends and mark what changed.`;
+  }
+
+  function buildReviewQueue(tasks) {
+    const explicitReviewTasks = tasks.filter((task) =>
+      /(quiz|test|exam|study|review|vocab|vocabulary|notes|flashcards)/i.test(task.title)
+    );
+
+    const queue = explicitReviewTasks.slice(0, 3).map((task) => {
+      return `Review ${task.subject}: ${shorten(task.title, 64)}`;
+    });
+
+    const subjectBackups = unique(tasks.map((task) => task.subject))
+      .filter((subject) => subject !== "General")
+      .slice(0, 3);
+
+    subjectBackups.forEach((subject) => {
+      if (queue.length < 3) {
+        queue.push(`Check ${subject}: redo one hard example or summarize the main idea.`);
+      }
+    });
+
+    if (!queue.length) {
+      queue.push("Do a 7-minute review of the hardest item from tonight.");
+      queue.push("Write one question to ask tomorrow if anything is unclear.");
+    }
+
+    return queue.slice(0, 3);
+  }
+
+  function buildFocusPlan(tasks, totalTime) {
+    const topTasks = tasks.slice(0, 3);
+    const plan = ["5 min — reset desk, put phone away, and open the first task"];
+
+    topTasks.forEach((task, index) => {
+      const blockLength = clamp(task.minutes, 15, 30);
+      plan.push(`${blockLength} min — ${task.subject}: ${shorten(task.title, 58)}`);
+
+      if (index < topTasks.length - 1) {
+        plan.push("5 min — stand up, water break, then return");
+      }
+    });
+
+    if (totalTime > 75) {
+      plan.push("10 min — review queue only, no perfection pass");
     } else {
-      lines.push(`${minutesToTime(block.start)}–${minutesToTime(block.end)}: ${block.title} (${block.tag})`);
+      plan.push("7 min — review queue and check tomorrow’s materials");
     }
-  });
 
-  return lines.join("\n");
-}
+    plan.push("3 min — pack finished work and write the next school-day reminder");
 
-async function copyPlan() {
-  if (!latestPlanText) return;
-
-  try {
-    await navigator.clipboard.writeText(latestPlanText);
-    showToast("Plan copied.");
-  } catch {
-    showToast("Copy failed. Your browser may block clipboard access.");
-  }
-}
-
-function timeToMinutes(value) {
-  const [hours, minutes] = value.split(":").map(Number);
-
-  if (Number.isNaN(hours) || Number.isNaN(minutes)) {
-    return 18 * 60 + 30;
+    return plan;
   }
 
-  return hours * 60 + minutes;
-}
+  function buildChecklist(tasks, firstAction, reviewQueue) {
+    const checklist = [
+      {
+        label: "Clear one workspace surface and move your phone out of reach.",
+        meta: "2 min"
+      },
+      {
+        label: firstAction,
+        meta: "5 min"
+      }
+    ];
 
-function minutesToTime(totalMinutes) {
-  const normalized = ((totalMinutes % 1440) + 1440) % 1440;
-  const hours24 = Math.floor(normalized / 60);
-  const minutes = normalized % 60;
-
-  const suffix = hours24 >= 12 ? "PM" : "AM";
-  const hours12 = hours24 % 12 || 12;
-
-  return `${hours12}:${String(minutes).padStart(2, "0")} ${suffix}`;
-}
-
-function showToast(message) {
-  elements.toast.textContent = message;
-  elements.toast.hidden = false;
-
-  window.clearTimeout(showToast.timeoutId);
-  showToast.timeoutId = window.setTimeout(() => {
-    elements.toast.hidden = true;
-  }, 2600);
-}
-
-function observeReveals() {
-  const revealElements = document.querySelectorAll(".reveal");
-
-  if (!("IntersectionObserver" in window)) {
-    revealElements.forEach((element) => element.classList.add("is-visible"));
-    return;
-  }
-
-  const observer = new IntersectionObserver(
-    (entries) => {
-      entries.forEach((entry) => {
-        if (!entry.isIntersecting) return;
-        entry.target.classList.add("is-visible");
-        observer.unobserve(entry.target);
+    tasks.slice(0, 3).forEach((task, index) => {
+      checklist.push({
+        label: `${index === 0 ? "Finish the first focus block" : "Move to the next block"}: ${task.title}`,
+        meta: `${clamp(task.minutes, 15, 30)} min`
       });
-    },
-    { threshold: 0.16 }
-  );
+    });
 
-  revealElements.forEach((element) => observer.observe(element));
-}
+    checklist.push({
+      label: reviewQueue[0] || "Review the hardest item from tonight.",
+      meta: "7 min"
+    });
 
-init();
+    checklist.push({
+      label: "Pack materials for tomorrow and close the plan.",
+      meta: "3 min"
+    });
+
+    return checklist.slice(0, 7);
+  }
+
+  function renderPlan(plan) {
+    dom.resultEmpty.hidden = true;
+    dom.resultContent.hidden = false;
+
+    dom.totalTime.textContent = `${plan.totalTime} min`;
+    dom.firstActionText.textContent = plan.firstAction;
+    dom.dynamicFiveAction.textContent = plan.firstAction;
+
+    replaceWithChips(dom.subjectList, plan.subjects);
+    renderPriorityList(plan.tasks);
+    replaceWithList(dom.reviewQueue, plan.reviewQueue);
+    replaceWithList(dom.focusPlan, plan.focusPlan);
+  }
+
+  function replaceWithChips(container, items) {
+    container.replaceChildren();
+
+    items.forEach((item) => {
+      const chip = document.createElement("span");
+      chip.className = "chip";
+      chip.textContent = item;
+      container.appendChild(chip);
+    });
+  }
+
+  function replaceWithList(container, items) {
+    container.replaceChildren();
+
+    items.forEach((item) => {
+      const li = document.createElement("li");
+      li.textContent = item;
+      container.appendChild(li);
+    });
+  }
+
+  function renderPriorityList(tasks) {
+    dom.priorityList.replaceChildren();
+
+    tasks.forEach((task, index) => {
+      const li = document.createElement("li");
+      li.className = "priority-item";
+
+      const priorityIndex = document.createElement("span");
+      priorityIndex.className = "priority-index";
+      priorityIndex.textContent = String(index + 1).padStart(2, "0");
+
+      const main = document.createElement("div");
+      main.className = "priority-main";
+
+      const title = document.createElement("strong");
+      title.textContent = task.title;
+
+      const meta = document.createElement("span");
+      meta.textContent = `${task.subject} · ${priorityLabel(task.score)}`;
+
+      const reasonWrap = document.createElement("div");
+      reasonWrap.className = "priority-reasons";
+
+      task.reasons.forEach((reason) => {
+        const reasonChip = document.createElement("span");
+        reasonChip.className = "reason-chip";
+        reasonChip.textContent = reason;
+        reasonWrap.appendChild(reasonChip);
+      });
+
+      main.append(title, meta, reasonWrap);
+
+      const time = document.createElement("div");
+      time.className = "priority-time";
+
+      const minutes = document.createElement("span");
+      minutes.textContent = `${task.minutes}`;
+
+      const label = document.createElement("small");
+      label.textContent = "min";
+
+      time.append(minutes, label);
+      li.append(priorityIndex, main, time);
+      dom.priorityList.appendChild(li);
+    });
+  }
+
+  function renderOrbitCard(plan, checked) {
+    const safeChecked = Array.isArray(checked) ? checked : [];
+    currentCard = {
+      plan,
+      checked: plan.checklist.map((_, index) => Boolean(safeChecked[index]))
+    };
+
+    dom.orbitCard.hidden = false;
+    dom.topTaskBadge.textContent = plan.tasks[0] ? `Top: ${plan.tasks[0].subject}` : "Top task";
+    dom.activeSubjectBadge.textContent = plan.subjects.join(", ");
+    dom.generatedDate.textContent = formatDate(plan.createdAt);
+    dom.cardChecklist.replaceChildren();
+
+    plan.checklist.forEach((item, index) => {
+      const li = document.createElement("li");
+
+      const checkbox = document.createElement("input");
+      checkbox.type = "checkbox";
+      checkbox.id = `orbit-check-${index}`;
+      checkbox.checked = Boolean(currentCard.checked[index]);
+
+      const label = document.createElement("label");
+      label.setAttribute("for", checkbox.id);
+      label.textContent = item.label;
+
+      const meta = document.createElement("span");
+      meta.className = "check-meta";
+      meta.textContent = item.meta;
+
+      checkbox.addEventListener("change", () => {
+        currentCard.checked[index] = checkbox.checked;
+        saveCard(currentCard.plan, currentCard.checked);
+        updateCardProgress();
+        setSaveStatus("Progress saved locally in this browser.", "success");
+      });
+
+      li.append(checkbox, label, meta);
+      dom.cardChecklist.appendChild(li);
+    });
+
+    updateCardProgress();
+  }
+
+  function updateCardProgress() {
+    if (!currentCard || !currentCard.plan) {
+      return;
+    }
+
+    const total = currentCard.plan.checklist.length;
+    const done = currentCard.checked.filter(Boolean).length;
+    const percent = total ? Math.round((done / total) * 100) : 0;
+
+    dom.cardProgressValue.textContent = `${percent}%`;
+    dom.cardProgressRing.style.setProperty("--progress", `${percent * 3.6}deg`);
+    dom.cardProgressRing.setAttribute("aria-label", `Checklist progress ${percent} percent`);
+  }
+
+  function saveCard(plan, checked) {
+    const saved = storage.set(STORAGE_KEYS.card, {
+      plan,
+      checked,
+      savedAt: new Date().toISOString()
+    });
+
+    if (saved) {
+      setSaveStatus("Tonight Orbit Card saved locally.", "success");
+    } else {
+      setSaveStatus("Plan generated, but local saving is unavailable in this browser.", "warn");
+    }
+  }
+
+  function hydrateSavedPlan() {
+    const saved = storage.get(STORAGE_KEYS.card, null);
+
+    if (!saved || !saved.plan || !Array.isArray(saved.plan.tasks)) {
+      return;
+    }
+
+    renderPlan(saved.plan);
+    renderOrbitCard(saved.plan, saved.checked);
+    setHint("Loaded your last local Orbit Card. Generate a new plan anytime.", "success");
+  }
+
+  function clearSavedCard() {
+    storage.remove(STORAGE_KEYS.card);
+    currentCard = null;
+
+    dom.orbitCard.hidden = true;
+    dom.cardChecklist.replaceChildren();
+    dom.cardProgressValue.textContent = "0%";
+    dom.cardProgressRing.style.setProperty("--progress", "0deg");
+
+    setSaveStatus("Saved Orbit Card cleared from this browser.", "success");
+  }
+
+  async function copyCurrentPlan() {
+    if (!currentCard || !currentCard.plan) {
+      setSaveStatus("Generate a plan before copying.", "warn");
+      return;
+    }
+
+    const text = formatPlanForCopy(currentCard.plan);
+    const copied = await copyText(text);
+
+    if (copied) {
+      setSaveStatus("Plan copied to clipboard.", "success");
+    } else {
+      setSaveStatus("Clipboard unavailable. Select the generated plan text manually.", "warn");
+    }
+  }
+
+  function formatPlanForCopy(plan) {
+    const lines = [
+      `Orbit Study Plan — ${formatDate(plan.createdAt)}`,
+      "",
+      `Detected subjects: ${plan.subjects.join(", ")}`,
+      `Estimated time: ${plan.totalTime} minutes`,
+      "",
+      "Priority order:"
+    ];
+
+    plan.tasks.forEach((task, index) => {
+      lines.push(`${index + 1}. ${task.subject} — ${task.title} (${task.minutes} min)`);
+    });
+
+    lines.push("", `First 5-minute action: ${plan.firstAction}`);
+    lines.push("", "Review queue:");
+    plan.reviewQueue.forEach((item) => lines.push(`- ${item}`));
+
+    lines.push("", "Quick focus plan:");
+    plan.focusPlan.forEach((item) => lines.push(`- ${item}`));
+
+    lines.push("", "Tonight Orbit Card:");
+    plan.checklist.forEach((item) => lines.push(`- [ ] ${item.label} (${item.meta})`));
+
+    return lines.join("\n");
+  }
+
+  async function copyText(text) {
+    if (navigator.clipboard && window.isSecureContext) {
+      try {
+        await navigator.clipboard.writeText(text);
+        return true;
+      } catch {
+        return fallbackCopy(text);
+      }
+    }
+
+    return fallbackCopy(text);
+  }
+
+  function fallbackCopy(text) {
+    const textarea = document.createElement("textarea");
+    textarea.value = text;
+    textarea.setAttribute("readonly", "");
+    textarea.style.position = "fixed";
+    textarea.style.top = "-999px";
+    textarea.style.opacity = "0";
+
+    document.body.appendChild(textarea);
+    textarea.select();
+
+    let copied = false;
+    try {
+      copied = document.execCommand("copy");
+    } catch {
+      copied = false;
+    }
+
+    textarea.remove();
+    return copied;
+  }
+
+  function bindPricingModal() {
+    $$(".pricing-action").forEach((button) => {
+      button.addEventListener("click", () => {
+        openPricingModal(button.dataset.plan || "Orbit");
+      });
+    });
+
+    $$("[data-close-modal]").forEach((button) => {
+      button.addEventListener("click", closePricingModal);
+    });
+
+    dom.saveInterest.addEventListener("click", () => {
+      if (!selectedPricingPlan) {
+        return;
+      }
+
+      const saved = storage.set(STORAGE_KEYS.pricing, {
+        plan: selectedPricingPlan,
+        savedAt: new Date().toISOString()
+      });
+
+      if (saved) {
+        dom.interestStatus.textContent = `${selectedPricingPlan} interest saved locally. No payment was made.`;
+        dom.interestStatus.className = "save-status success";
+        updatePricingInterestText();
+      } else {
+        dom.interestStatus.textContent = "Local saving is unavailable in this browser.";
+        dom.interestStatus.className = "save-status warn";
+      }
+    });
+
+    document.addEventListener("keydown", (event) => {
+      if (event.key === "Escape" && !dom.pricingModal.hidden) {
+        closePricingModal();
+      }
+    });
+  }
+
+  function openPricingModal(planName) {
+    selectedPricingPlan = planName;
+    lastFocusedElement = document.activeElement;
+
+    dom.modalTitle.textContent = `${planName} is coming soon`;
+
+    if (planName === "Free") {
+      dom.modalText.textContent =
+        "The Free plan would include 3 study plans per week, basic planning, and local progress. This static demo already lets you try the core planning flow.";
+    } else if (planName === "Orbit Plus") {
+      dom.modalText.textContent =
+        "Orbit Plus would add unlimited study plans, saved study history, better review tools, focus mode, and weekly summaries. Real subscriptions require a backend and payment provider.";
+    } else {
+      dom.modalText.textContent =
+        "Orbit Pro would support deeper planning, advanced review queues, priority support, and future AI extraction plus image/PDF tools. Those future features are not faked in this static site.";
+    }
+
+    dom.interestStatus.textContent = "";
+    dom.interestStatus.className = "save-status";
+    dom.pricingModal.hidden = false;
+    document.body.classList.add("modal-open");
+
+    const modalPanel = $(".modal-panel", dom.pricingModal);
+    window.setTimeout(() => modalPanel.focus(), 0);
+  }
+
+  function closePricingModal() {
+    dom.pricingModal.hidden = true;
+    document.body.classList.remove("modal-open");
+
+    if (lastFocusedElement && typeof lastFocusedElement.focus === "function") {
+      lastFocusedElement.focus();
+    }
+  }
+
+  function updatePricingInterestText() {
+    const interest = storage.get(STORAGE_KEYS.pricing, null);
+
+    if (!interest || !interest.plan) {
+      dom.pricingInterestStatus.textContent =
+        "No pricing interest saved. Buttons above only open a coming-soon message.";
+      dom.pricingInterestStatus.className = "pricing-interest";
+      return;
+    }
+
+    dom.pricingInterestStatus.textContent =
+      `Saved locally: interested in ${interest.plan}. This is not a subscription or payment.`;
+    dom.pricingInterestStatus.className = "pricing-interest success";
+  }
+
+  function markPlanUsed() {
+    const week = getWeekKey();
+    const usage = storage.get(STORAGE_KEYS.usage, {
+      week,
+      count: 0
+    });
+
+    const nextUsage = usage.week === week
+      ? { week, count: usage.count + 1 }
+      : { week, count: 1 };
+
+    storage.set(STORAGE_KEYS.usage, nextUsage);
+    updateUsageText();
+  }
+
+  function updateUsageText() {
+    const week = getWeekKey();
+    const usage = storage.get(STORAGE_KEYS.usage, {
+      week,
+      count: 0
+    });
+
+    const count = usage.week === week ? usage.count : 0;
+
+    dom.usageCount.textContent =
+      `Local demo plans this week: ${count}. Free plan preview: 3/week in a real product; this static demo does not charge or block you.`;
+  }
+
+  function getWeekKey(date = new Date()) {
+    const utcDate = new Date(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()));
+    const day = utcDate.getUTCDay() || 7;
+
+    utcDate.setUTCDate(utcDate.getUTCDate() + 4 - day);
+
+    const yearStart = new Date(Date.UTC(utcDate.getUTCFullYear(), 0, 1));
+    const weekNumber = Math.ceil((((utcDate - yearStart) / 86400000) + 1) / 7);
+
+    return `${utcDate.getUTCFullYear()}-W${String(weekNumber).padStart(2, "0")}`;
+  }
+
+  function revealOnScroll() {
+    const items = $$(".reveal");
+
+    if (!("IntersectionObserver" in window)) {
+      items.forEach((item) => item.classList.add("is-visible"));
+      return;
+    }
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add("is-visible");
+            observer.unobserve(entry.target);
+          }
+        });
+      },
+      {
+        threshold: 0.12
+      }
+    );
+
+    items.forEach((item) => observer.observe(item));
+  }
+
+  function setHint(message, type) {
+    dom.inputHint.textContent = message;
+    dom.inputHint.className = type && type !== "neutral"
+      ? `input-hint ${type}`
+      : "input-hint";
+  }
+
+  function setSaveStatus(message, type) {
+    dom.saveStatus.textContent = message;
+    dom.saveStatus.className = type
+      ? `save-status ${type}`
+      : "save-status";
+  }
+
+  function priorityLabel(score) {
+    if (score >= 86) {
+      return "do first";
+    }
+
+    if (score >= 62) {
+      return "high priority";
+    }
+
+    if (score >= 40) {
+      return "medium priority";
+    }
+
+    return "low pressure";
+  }
+
+  function formatDate(value) {
+    const date = new Date(value);
+
+    if (Number.isNaN(date.getTime())) {
+      return "Saved locally";
+    }
+
+    return date.toLocaleString([], {
+      month: "short",
+      day: "numeric",
+      hour: "numeric",
+      minute: "2-digit"
+    });
+  }
+
+  function unique(items) {
+    return Array.from(new Set(items.filter(Boolean)));
+  }
+
+  function roundToNearestFive(number) {
+    return Math.max(5, Math.round(number / 5) * 5);
+  }
+
+  function clamp(number, min, max) {
+    return Math.min(Math.max(number, min), max);
+  }
+
+  function shorten(text, maxLength) {
+    if (text.length <= maxLength) {
+      return text;
+    }
+
+    return `${text.slice(0, maxLength - 1).trim()}…`;
+  }
+
+  function hashString(text) {
+    let hash = 0;
+
+    for (let index = 0; index < text.length; index += 1) {
+      hash = (hash << 5) - hash + text.charCodeAt(index);
+      hash |= 0;
+    }
+
+    return Math.abs(hash).toString(36);
+  }
+
+  init();
+})();
