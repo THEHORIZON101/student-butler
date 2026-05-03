@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Orbit — Turn homework chaos into tonight’s study plan</title>
+  <meta
+    name="description"
+    content="Orbit helps students brain dump homework, notes, and tasks, then turns them into a clear study plan for the night."
+  />
+  <link rel="stylesheet" href="style.css" />
+</head>
+
+<body>
+  <a class="skip-link" href="#planner">Skip to planner</a>
+
+  <div class="page-glow page-glow-one" aria-hidden="true"></div>
+  <div class="page-glow page-glow-two" aria-hidden="true"></div>
+
+  <header class="site-header" data-header>
+    <nav class="nav" aria-label="Main navigation">
+      <a class="brand" href="#top" aria-label="Orbit home">
+        <span class="brand-mark" aria-hidden="true">
+          <span class="brand-core"></span>
+        </span>
+        <span>Orbit</span>
+      </a>
+
+      <button class="menu-toggle" type="button" aria-label="Open menu" aria-expanded="false" data-menu-toggle>
+        <span></span>
+        <span></span>
+      </button>
+
+      <div class="nav-links" data-nav-links>
+        <a href="#planner">Planner</a>
+        <a href="#how">How it works</a>
+        <a href="#features">Features</a>
+        <button class="theme-toggle" type="button" data-theme-toggle aria-label="Toggle color theme">
+          <span data-theme-icon>☾</span>
+          <span data-theme-label>Dark</span>
+        </button>
+      </div>
+    </nav>
+  </header>
+
+  <main id="top">
+    <section class="hero section">
+      <div class="hero-copy reveal">
+        <p class="eyebrow">
+          <span class="pulse-dot" aria-hidden="true"></span>
+          After-school planning for tired brains
+        </p>
+
+        <h1>Come home. Dump the chaos. Know what to do tonight.</h1>
+
+        <p class="hero-text">
+          Orbit turns homework, notes, readings, and loose reminders into a calm study path with time blocks,
+          breaks, and a realistic finish line.
+        </p>
+
+        <div class="hero-actions" aria-label="Primary actions">
+          <a class="button button-primary" href="#planner">Build my plan</a>
+          <a class="button button-secondary" href="#how">See how it works</a>
+        </div>
+
+        <div class="hero-proof" aria-label="Orbit benefits">
+          <div>
+            <strong>3-step</strong>
+            <span>night reset</span>
+          </div>
+          <div>
+            <strong>Local</strong>
+            <span>browser save</span>
+          </div>
+          <div>
+            <strong>Mobile</strong>
+            <span>ready</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="hero-visual reveal" aria-label="Orbit app preview">
+        <div class="orbit-shell">
+          <div class="orbit-ring ring-one" aria-hidden="true"></div>
+          <div class="orbit-ring ring-two" aria-hidden="true"></div>
+
+          <div class="mock-app">
+            <div class="mock-topbar">
+              <div>
+                <span class="tiny-label">Tonight</span>
+                <strong>Study Orbit</strong>
+              </div>
+              <span class="status-pill">Ready</span>
+            </div>
+
+            <div class="focus-card">
+              <div>
+                <span class="tiny-label">First move</span>
+                <h2>Math worksheet</h2>
+              </div>
+              <span class="time-chip">25m</span>
+            </div>
+
+            <div class="mini-timeline" aria-hidden="true">
+              <span style="--w: 38%"></span>
+              <span style="--w: 62%"></span>
+              <span style="--w: 46%"></span>
+            </div>
+
+            <div class="mini-cards">
+              <article>
+                <span>01</span>
+                <p>Sort tasks</p>
+              </article>
+              <article>
+                <span>02</span>
+                <p>Place breaks</p>
+              </article>
+              <article>
+                <span>03</span>
+                <p>Start focused</p>
+              </article>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="planner" class="planner-section section">
+      <div class="section-heading reveal">
+        <p class="eyebrow">Try the planner</p>
+        <h2>Drop in everything on your mind.</h2>
+        <p>
+          Add one task per line. Orbit will estimate a practical study plan using your available time and energy level.
+        </p>
+      </div>
+
+      <div class="planner-grid">
+        <form class="planner-card input-card reveal" data-planner-form>
+          <div class="card-header">
+            <div>
+              <p class="eyebrow">Brain dump</p>
+              <h3>Homework, notes, tasks</h3>
+            </div>
+            <span class="save-state" data-save-state>Auto-saved locally</span>
+          </div>
+
+          <label class="sr-only" for="taskDump">Enter homework, notes, and tasks</label>
+          <textarea
+            id="taskDump"
+            name="taskDump"
+            data-task-dump
+            rows="10"
+            placeholder="Example:
+Math worksheet due tomorrow
+Read chapter 8 for history
+Study biology quiz notes
+English essay outline 45 min
+Pack gym clothes"
+          ></textarea>
+
+          <div class="controls-grid">
+            <label class="field">
+              <span>Energy tonight</span>
+              <select data-energy>
+                <option value="low">Low — keep it gentle</option>
+                <option value="medium" selected>Medium — balanced pace</option>
+                <option value="high">High — deeper focus</option>
+              </select>
+            </label>
+
+            <label class="field">
+              <span>Start time</span>
+              <input type="time" value="18:30" data-start-time />
+            </label>
+
+            <label class="field range-field">
+              <span>
+                Available time
+                <strong data-time-label>120 min</strong>
+              </span>
+              <input type="range" min="45" max="240" step="15" value="120" data-available-time />
+            </label>
+          </div>
+
+          <div class="planner-actions">
+            <button class="button button-primary" type="submit">Generate tonight’s plan</button>
+            <button class="button button-ghost" type="button" data-sample-button>Use sample</button>
+            <button class="button button-ghost danger" type="button" data-clear-button>Clear</button>
+          </div>
+
+          <p class="privacy-note">
+            This demo runs fully in your browser. It does not send your homework anywhere.
+          </p>
+        </form>
+
+        <section class="planner-card result-card reveal" aria-live="polite" aria-label="Generated study plan">
+          <div class="card-header">
+            <div>
+              <p class="eyebrow">Tonight’s orbit</p>
+              <h3>Your plan</h3>
+            </div>
+            <button class="copy-button" type="button" data-copy-plan disabled>Copy plan</button>
+          </div>
+
+          <div class="plan-stats" data-plan-stats>
+            <div>
+              <span>Tasks</span>
+              <strong>0</strong>
+            </div>
+            <div>
+              <span>Focus</span>
+              <strong>0m</strong>
+            </div>
+            <div>
+              <span>Finish</span>
+              <strong>—</strong>
+            </div>
+          </div>
+
+          <div class="empty-state" data-empty-state>
+            <div class="empty-orbit" aria-hidden="true"></div>
+            <h4>No plan yet</h4>
+            <p>Paste your homework list, choose your energy, then generate a clear path for the night.</p>
+          </div>
+
+          <div class="timeline" data-timeline hidden></div>
+        </section>
+      </div>
+    </section>
+
+    <section id="how" class="how-section section">
+      <div class="section-heading reveal">
+        <p class="eyebrow">How it works</p>
+        <h2>A simple reset after school.</h2>
+      </div>
+
+      <div class="steps-grid">
+        <article class="step-card reveal">
+          <span>01</span>
+          <h3>Dump everything</h3>
+          <p>No perfect formatting. Write the homework, reminders, notes, and due-soon stuff taking up space in your head.</p>
+        </article>
+
+        <article class="step-card reveal">
+          <span>02</span>
+          <h3>Orbit sorts the night</h3>
+          <p>The planner estimates time, prioritizes urgent study work, and fits tasks into the time you actually have.</p>
+        </article>
+
+        <article class="step-card reveal">
+          <span>03</span>
+          <h3>Start with one move</h3>
+          <p>You get a first task, a rhythm of breaks, and a clear finish point so the night feels possible.</p>
+        </article>
+      </div>
+    </section>
+
+    <section id="features" class="features-section section">
+      <div class="feature-panel reveal">
+        <div>
+          <p class="eyebrow">Why students use it</p>
+          <h2>Built for the moment when school follows you home.</h2>
+        </div>
+
+        <div class="feature-list">
+          <article>
+            <span aria-hidden="true">✦</span>
+            <div>
+              <h3>Messy input friendly</h3>
+              <p>Orbit works with natural task lists instead of forcing you into a complicated system.</p>
+            </div>
+          </article>
+
+          <article>
+            <span aria-hidden="true">◐</span>
+            <div>
+              <h3>Energy-aware planning</h3>
+              <p>Low-energy nights get shorter focus blocks and more breathing room.</p>
+            </div>
+          </article>
+
+          <article>
+            <span aria-hidden="true">⌁</span>
+            <div>
+              <h3>Honest static demo</h3>
+              <p>This version is frontend-only and ready for GitHub Pages. Real accounts or AI sync would need a backend.</p>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="final-cta section reveal">
+      <p class="eyebrow">Ready when the backpack hits the floor</p>
+      <h2>Give tonight a path before it becomes a spiral.</h2>
+      <a class="button button-primary" href="#planner">Plan tonight</a>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <p>© <span data-year></span> Orbit. A calm study-planning concept for students.</p>
+    <a href="#top">Back to top</a>
+  </footer>
+
+  <div class="toast" role="status" aria-live="polite" data-toast hidden></div>
+
+  <script src="script.js"></script>
+</body>
+</html>
