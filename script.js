@@ -18,93 +18,23 @@
   const subjectRules = [
     {
       name: "Math",
-      keywords: [
-        "math",
-        "algebra",
-        "geometry",
-        "calculus",
-        "equation",
-        "graph",
-        "fraction",
-        "derivative",
-        "proof",
-        "problem set",
-        "problems"
-      ]
+      keywords: ["math", "algebra", "geometry", "calculus", "equation", "graph", "fraction", "worksheet", "problem", "problems"]
     },
     {
       name: "English",
-      keywords: [
-        "english",
-        "essay",
-        "reading",
-        "novel",
-        "book",
-        "literature",
-        "annotation",
-        "annotate",
-        "poem",
-        "draft",
-        "thesis",
-        "paragraph"
-      ]
+      keywords: ["english", "essay", "reading", "novel", "book", "literature", "annotation", "draft", "thesis", "paragraph"]
     },
     {
       name: "Science",
-      keywords: [
-        "science",
-        "biology",
-        "bio",
-        "chemistry",
-        "chem",
-        "physics",
-        "lab",
-        "experiment",
-        "molecule",
-        "cell",
-        "force",
-        "vocab"
-      ]
+      keywords: ["science", "biology", "bio", "chemistry", "chem", "physics", "lab", "experiment", "cell", "vocab"]
     },
     {
       name: "History",
-      keywords: [
-        "history",
-        "social studies",
-        "government",
-        "civics",
-        "world war",
-        "timeline",
-        "source analysis",
-        "primary source"
-      ]
+      keywords: ["history", "social studies", "government", "civics", "chapter", "timeline", "source"]
     },
     {
       name: "Language",
-      keywords: [
-        "spanish",
-        "french",
-        "german",
-        "latin",
-        "language",
-        "vocabulary",
-        "conjugation",
-        "vocab practice"
-      ]
-    },
-    {
-      name: "Elective",
-      keywords: [
-        "art",
-        "music",
-        "band",
-        "choir",
-        "health",
-        "computer",
-        "coding",
-        "robotics",
-        "elective"
-      ]
+      keywords: ["spanish", "french", "german", "latin", "language", "vocabulary", "conjugation", "vocab"]
     }
   ];
 
@@ -155,7 +85,7 @@
   const storage = {
     get(key, fallback) {
       try {
-        const value = window.localStorage.getItem(key);
+        const value = localStorage.getItem(key);
         return value ? JSON.parse(value) : fallback;
       } catch {
         return fallback;
@@ -164,7 +94,7 @@
 
     set(key, value) {
       try {
-        window.localStorage.setItem(key, JSON.stringify(value));
+        localStorage.setItem(key, JSON.stringify(value));
         return true;
       } catch {
         return false;
@@ -173,7 +103,7 @@
 
     remove(key) {
       try {
-        window.localStorage.removeItem(key);
+        localStorage.removeItem(key);
         return true;
       } catch {
         return false;
@@ -184,6 +114,8 @@
   let currentCard = null;
   let selectedPricingPlan = "";
   let lastFocusedElement = null;
+
+  document.addEventListener("DOMContentLoaded", init);
 
   function init() {
     bindTheme();
@@ -197,6 +129,8 @@
   }
 
   function bindTheme() {
+    if (!dom.themeToggle) return;
+
     const savedTheme = storage.get(STORAGE_KEYS.theme, null);
     const prefersLight = window.matchMedia && window.matchMedia("(prefers-color-scheme: light)").matches;
     const initialTheme = savedTheme || (prefersLight ? "light" : "dark");
@@ -213,14 +147,19 @@
   function applyTheme(theme) {
     const safeTheme = theme === "light" ? "light" : "dark";
     document.documentElement.dataset.theme = safeTheme;
-    dom.themeToggle.textContent = safeTheme === "light" ? "Dark" : "Light";
-    dom.themeToggle.setAttribute(
-      "aria-label",
-      safeTheme === "light" ? "Switch to dark mode" : "Switch to light mode"
-    );
+
+    if (dom.themeToggle) {
+      dom.themeToggle.textContent = safeTheme === "light" ? "Dark" : "Light";
+      dom.themeToggle.setAttribute(
+        "aria-label",
+        safeTheme === "light" ? "Switch to dark mode" : "Switch to light mode"
+      );
+    }
   }
 
   function bindNavigation() {
+    if (!dom.menuToggle || !dom.navLinks) return;
+
     dom.menuToggle.addEventListener("click", () => {
       const isOpen = dom.navLinks.classList.toggle("is-open");
       dom.menuToggle.setAttribute("aria-expanded", String(isOpen));
@@ -237,13 +176,15 @@
   }
 
   function bindPlannerDemo() {
-    dom.sampleInput.addEventListener("click", () => {
+    if (!dom.planInput || !dom.generatePlan) return;
+
+    dom.sampleInput?.addEventListener("click", () => {
       dom.planInput.value = sampleMess;
       setHint("Sample mess loaded. You can edit it or generate the plan.", "success");
       dom.planInput.focus();
     });
 
-    dom.clearInput.addEventListener("click", () => {
+    dom.clearInput?.addEventListener("click", () => {
       dom.planInput.value = "";
       setHint("Cleared. Paste a few assignments to build a new plan.", "neutral");
       dom.planInput.focus();
@@ -258,8 +199,8 @@
       }
     });
 
-    dom.copyPlan.addEventListener("click", copyCurrentPlan);
-    dom.clearSavedPlan.addEventListener("click", clearSavedCard);
+    dom.copyPlan?.addEventListener("click", copyCurrentPlan);
+    dom.clearSavedPlan?.addEventListener("click", clearSavedCard);
   }
 
   function handleGeneratePlan() {
@@ -281,7 +222,7 @@
 
     setHint("Plan generated locally. Nothing was uploaded or sent to a server.", "success");
 
-    dom.resultContent.scrollIntoView({
+    dom.resultContent?.scrollIntoView({
       behavior: "smooth",
       block: "nearest"
     });
@@ -289,10 +230,10 @@
 
   function buildPlan(text) {
     const lines = normalizeLines(text);
-    const tasks = lines.map(createTask).sort(sortByPriority);
+    const tasks = lines.map((line, index) => createTask(line, index)).sort(sortByPriority);
 
     if (!tasks.length) {
-      tasks.push(createTask("General study review for tonight"));
+      tasks.push(createTask("General study review for tonight", 0));
     }
 
     const subjects = unique(tasks.map((task) => task.subject));
@@ -316,17 +257,14 @@
   }
 
   function normalizeLines(text) {
-    const bulletCleaned = text
+    let lines = text
       .replace(/\r/g, "\n")
       .replace(/[•●]/g, "\n")
-      .replace(/\s+-\s+/g, "\n- ");
-
-    let lines = bulletCleaned
       .split(/\n|;/)
       .map(cleanLine)
       .filter(Boolean);
 
-    if (lines.length === 1 && lines[0].length > 110) {
+    if (lines.length === 1 && lines[0].length > 100) {
       lines = lines[0]
         .split(/\.\s+|\?\s+|!\s+/)
         .map(cleanLine)
@@ -343,14 +281,14 @@
       .trim();
   }
 
-  function createTask(line, index = 0) {
+  function createTask(line, index) {
     const lower = line.toLowerCase();
     const subject = inferSubject(lower);
     const reasons = [];
     let score = 20 + Math.max(0, 8 - index);
     let minutes = 20;
 
-    if (/(due|tomorrow|tonight|tonite|before|by\s+\w+|monday|tuesday|wednesday|thursday|friday)/i.test(lower)) {
+    if (/(due|tomorrow|tonight|monday|tuesday|wednesday|thursday|friday)/i.test(lower)) {
       score += 38;
       minutes += 5;
       reasons.push("due soon");
@@ -362,7 +300,7 @@
       reasons.push("review risk");
     }
 
-    if (/(worksheet|packet|problem set|problems|questions|exercise)/i.test(lower)) {
+    if (/(worksheet|packet|problem|problems|questions|exercise)/i.test(lower)) {
       score += 20;
       minutes += 14;
       reasons.push("work block");
@@ -401,9 +339,7 @@
     minutes += estimateVolumeMinutes(lower);
     minutes = clamp(roundToNearestFive(minutes), 10, 80);
 
-    if (!reasons.length) {
-      reasons.push("momentum");
-    }
+    if (!reasons.length) reasons.push("momentum");
 
     return {
       id: `task-${index}-${hashString(line)}`,
@@ -461,17 +397,13 @@
   }
 
   function sortByPriority(a, b) {
-    if (b.score !== a.score) {
-      return b.score - a.score;
-    }
-
+    if (b.score !== a.score) return b.score - a.score;
     return b.minutes - a.minutes;
   }
 
   function buildFirstAction(topTask) {
     const subjectPhrase = topTask.subject === "General" ? "your top assignment" : `${topTask.subject} materials`;
-
-    return `Set a 5-minute timer, open ${subjectPhrase}, and complete the smallest visible step for “${topTask.title}.” Stop when the timer ends and mark what changed.`;
+    return `Set a 5-minute timer, open ${subjectPhrase}, and complete the smallest visible step for “${topTask.title}.”`;
   }
 
   function buildReviewQueue(tasks) {
@@ -558,12 +490,12 @@
   }
 
   function renderPlan(plan) {
-    dom.resultEmpty.hidden = true;
-    dom.resultContent.hidden = false;
+    if (dom.resultEmpty) dom.resultEmpty.hidden = true;
+    if (dom.resultContent) dom.resultContent.hidden = false;
 
-    dom.totalTime.textContent = `${plan.totalTime} min`;
-    dom.firstActionText.textContent = plan.firstAction;
-    dom.dynamicFiveAction.textContent = plan.firstAction;
+    if (dom.totalTime) dom.totalTime.textContent = `${plan.totalTime} min`;
+    if (dom.firstActionText) dom.firstActionText.textContent = plan.firstAction;
+    if (dom.dynamicFiveAction) dom.dynamicFiveAction.textContent = plan.firstAction;
 
     replaceWithChips(dom.subjectList, plan.subjects);
     renderPriorityList(plan.tasks);
@@ -572,6 +504,8 @@
   }
 
   function replaceWithChips(container, items) {
+    if (!container) return;
+
     container.replaceChildren();
 
     items.forEach((item) => {
@@ -583,6 +517,8 @@
   }
 
   function replaceWithList(container, items) {
+    if (!container) return;
+
     container.replaceChildren();
 
     items.forEach((item) => {
@@ -593,6 +529,8 @@
   }
 
   function renderPriorityList(tasks) {
+    if (!dom.priorityList) return;
+
     dom.priorityList.replaceChildren();
 
     tasks.forEach((task, index) => {
@@ -640,16 +578,18 @@
   }
 
   function renderOrbitCard(plan, checked) {
-    const safeChecked = Array.isArray(checked) ? checked : [];
+    if (!dom.orbitCard || !dom.cardChecklist) return;
+
     currentCard = {
       plan,
-      checked: plan.checklist.map((_, index) => Boolean(safeChecked[index]))
+      checked: plan.checklist.map((_, index) => Boolean(checked[index]))
     };
 
     dom.orbitCard.hidden = false;
-    dom.topTaskBadge.textContent = plan.tasks[0] ? `Top: ${plan.tasks[0].subject}` : "Top task";
-    dom.activeSubjectBadge.textContent = plan.subjects.join(", ");
-    dom.generatedDate.textContent = formatDate(plan.createdAt);
+    if (dom.topTaskBadge) dom.topTaskBadge.textContent = plan.tasks[0] ? `Top: ${plan.tasks[0].subject}` : "Top task";
+    if (dom.activeSubjectBadge) dom.activeSubjectBadge.textContent = plan.subjects.join(", ");
+    if (dom.generatedDate) dom.generatedDate.textContent = formatDate(plan.createdAt);
+
     dom.cardChecklist.replaceChildren();
 
     plan.checklist.forEach((item, index) => {
@@ -683,17 +623,17 @@
   }
 
   function updateCardProgress() {
-    if (!currentCard || !currentCard.plan) {
-      return;
-    }
+    if (!currentCard || !currentCard.plan) return;
 
     const total = currentCard.plan.checklist.length;
     const done = currentCard.checked.filter(Boolean).length;
     const percent = total ? Math.round((done / total) * 100) : 0;
 
-    dom.cardProgressValue.textContent = `${percent}%`;
-    dom.cardProgressRing.style.setProperty("--progress", `${percent * 3.6}deg`);
-    dom.cardProgressRing.setAttribute("aria-label", `Checklist progress ${percent} percent`);
+    if (dom.cardProgressValue) dom.cardProgressValue.textContent = `${percent}%`;
+    if (dom.cardProgressRing) {
+      dom.cardProgressRing.style.setProperty("--progress", `${percent * 3.6}deg`);
+      dom.cardProgressRing.setAttribute("aria-label", `Checklist progress ${percent} percent`);
+    }
   }
 
   function saveCard(plan, checked) {
@@ -713,12 +653,10 @@
   function hydrateSavedPlan() {
     const saved = storage.get(STORAGE_KEYS.card, null);
 
-    if (!saved || !saved.plan || !Array.isArray(saved.plan.tasks)) {
-      return;
-    }
+    if (!saved || !saved.plan || !Array.isArray(saved.plan.tasks)) return;
 
     renderPlan(saved.plan);
-    renderOrbitCard(saved.plan, saved.checked);
+    renderOrbitCard(saved.plan, saved.checked || []);
     setHint("Loaded your last local Orbit Card. Generate a new plan anytime.", "success");
   }
 
@@ -726,10 +664,10 @@
     storage.remove(STORAGE_KEYS.card);
     currentCard = null;
 
-    dom.orbitCard.hidden = true;
-    dom.cardChecklist.replaceChildren();
-    dom.cardProgressValue.textContent = "0%";
-    dom.cardProgressRing.style.setProperty("--progress", "0deg");
+    if (dom.orbitCard) dom.orbitCard.hidden = true;
+    if (dom.cardChecklist) dom.cardChecklist.replaceChildren();
+    if (dom.cardProgressValue) dom.cardProgressValue.textContent = "0%";
+    if (dom.cardProgressRing) dom.cardProgressRing.style.setProperty("--progress", "0deg");
 
     setSaveStatus("Saved Orbit Card cleared from this browser.", "success");
   }
@@ -802,6 +740,7 @@
     textarea.select();
 
     let copied = false;
+
     try {
       copied = document.execCommand("copy");
     } catch {
@@ -823,10 +762,8 @@
       button.addEventListener("click", closePricingModal);
     });
 
-    dom.saveInterest.addEventListener("click", () => {
-      if (!selectedPricingPlan) {
-        return;
-      }
+    dom.saveInterest?.addEventListener("click", () => {
+      if (!selectedPricingPlan) return;
 
       const saved = storage.set(STORAGE_KEYS.pricing, {
         plan: selectedPricingPlan,
@@ -844,13 +781,15 @@
     });
 
     document.addEventListener("keydown", (event) => {
-      if (event.key === "Escape" && !dom.pricingModal.hidden) {
+      if (event.key === "Escape" && dom.pricingModal && !dom.pricingModal.hidden) {
         closePricingModal();
       }
     });
   }
 
   function openPricingModal(planName) {
+    if (!dom.pricingModal || !dom.modalTitle || !dom.modalText) return;
+
     selectedPricingPlan = planName;
     lastFocusedElement = document.activeElement;
 
@@ -867,16 +806,23 @@
         "Orbit Pro would support deeper planning, advanced review queues, priority support, and future AI extraction plus image/PDF tools. Those future features are not faked in this static site.";
     }
 
-    dom.interestStatus.textContent = "";
-    dom.interestStatus.className = "save-status";
+    if (dom.interestStatus) {
+      dom.interestStatus.textContent = "";
+      dom.interestStatus.className = "save-status";
+    }
+
     dom.pricingModal.hidden = false;
     document.body.classList.add("modal-open");
 
     const modalPanel = $(".modal-panel", dom.pricingModal);
-    window.setTimeout(() => modalPanel.focus(), 0);
+    if (modalPanel) {
+      window.setTimeout(() => modalPanel.focus(), 0);
+    }
   }
 
   function closePricingModal() {
+    if (!dom.pricingModal) return;
+
     dom.pricingModal.hidden = true;
     document.body.classList.remove("modal-open");
 
@@ -886,6 +832,8 @@
   }
 
   function updatePricingInterestText() {
+    if (!dom.pricingInterestStatus) return;
+
     const interest = storage.get(STORAGE_KEYS.pricing, null);
 
     if (!interest || !interest.plan) {
@@ -916,6 +864,8 @@
   }
 
   function updateUsageText() {
+    if (!dom.usageCount) return;
+
     const week = getWeekKey();
     const usage = storage.get(STORAGE_KEYS.usage, {
       week,
@@ -966,6 +916,8 @@
   }
 
   function setHint(message, type) {
+    if (!dom.inputHint) return;
+
     dom.inputHint.textContent = message;
     dom.inputHint.className = type && type !== "neutral"
       ? `input-hint ${type}`
@@ -973,6 +925,8 @@
   }
 
   function setSaveStatus(message, type) {
+    if (!dom.saveStatus) return;
+
     dom.saveStatus.textContent = message;
     dom.saveStatus.className = type
       ? `save-status ${type}`
@@ -980,18 +934,9 @@
   }
 
   function priorityLabel(score) {
-    if (score >= 86) {
-      return "do first";
-    }
-
-    if (score >= 62) {
-      return "high priority";
-    }
-
-    if (score >= 40) {
-      return "medium priority";
-    }
-
+    if (score >= 86) return "do first";
+    if (score >= 62) return "high priority";
+    if (score >= 40) return "medium priority";
     return "low pressure";
   }
 
@@ -1023,10 +968,7 @@
   }
 
   function shorten(text, maxLength) {
-    if (text.length <= maxLength) {
-      return text;
-    }
-
+    if (text.length <= maxLength) return text;
     return `${text.slice(0, maxLength - 1).trim()}…`;
   }
 
@@ -1040,6 +982,4 @@
 
     return Math.abs(hash).toString(36);
   }
-
-  init();
 })();
