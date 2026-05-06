@@ -1,8 +1,10 @@
 const modes = {
   logic: {
     name: "Logic Coach",
+    short: "Logic",
     label: "Find weak reasoning",
     focus: "clarity, assumptions, and logical gaps",
+    accent: "01",
     drills: [
       "Separate your opinion from your actual claim.",
       "Name one assumption your argument depends on.",
@@ -11,8 +13,10 @@ const modes = {
   },
   opponent: {
     name: "Opponent Mode",
-    label: "Fight the strongest counterargument",
-    focus: "pressure, objections, and defense",
+    short: "Opponent",
+    label: "Pressure-test the claim",
+    focus: "objections, defense, and calm responses",
+    accent: "02",
     drills: [
       "Answer the strongest possible objection.",
       "Admit one fair point from the other side.",
@@ -21,8 +25,10 @@ const modes = {
   },
   judge: {
     name: "Judge Mode",
+    short: "Judge",
     label: "Score both sides fairly",
     focus: "balance, fairness, and decision-making",
+    accent: "03",
     drills: [
       "Score the claim from 1–10.",
       "Explain what evidence would change the result.",
@@ -31,8 +37,10 @@ const modes = {
   },
   evidence: {
     name: "Evidence Mode",
+    short: "Evidence",
     label: "Test proof quality",
     focus: "examples, evidence, and credibility",
+    accent: "04",
     drills: [
       "Give one real example that supports your claim.",
       "Say what kind of evidence would weaken it.",
@@ -41,8 +49,10 @@ const modes = {
   },
   claim: {
     name: "Claim Mode",
+    short: "Claim",
     label: "Make the idea sharper",
     focus: "precision, wording, and structure",
+    accent: "05",
     drills: [
       "Rewrite your topic as one clear claim.",
       "Remove emotional wording.",
@@ -73,8 +83,11 @@ document.addEventListener("DOMContentLoaded", () => {
   bindCopyButton();
   bindSaveButton();
   bindResetButton();
+  bindSavedClearButton();
+  bindMagneticButtons();
   renderUsage();
   renderSavedSessions();
+  updateModePreview();
   revealOnScroll();
 });
 
@@ -82,10 +95,13 @@ function bindModeButtons() {
   document.querySelectorAll("[data-mode]").forEach((button) => {
     button.addEventListener("click", () => {
       state.activeMode = button.dataset.mode;
+
       document.querySelectorAll("[data-mode]").forEach((item) => {
         item.classList.toggle("is-active", item.dataset.mode === state.activeMode);
       });
+
       updateModePreview();
+      showToast(`${modes[state.activeMode].name} selected.`);
     });
   });
 }
@@ -133,15 +149,14 @@ function bindCopyButton() {
 
   button.addEventListener("click", async () => {
     const output = document.querySelector("#sessionOutput");
+
     if (!output || output.dataset.empty === "true") {
       showToast("Generate a session first.");
       return;
     }
 
-    const text = output.innerText.trim();
-
     try {
-      await navigator.clipboard.writeText(text);
+      await navigator.clipboard.writeText(output.innerText.trim());
       showToast("Session copied.");
     } catch {
       showToast("Copy failed. Select the text manually.");
@@ -155,6 +170,7 @@ function bindSaveButton() {
 
   button.addEventListener("click", () => {
     const output = document.querySelector("#sessionOutput");
+
     if (!output || output.dataset.empty === "true") {
       showToast("Generate a session first.");
       return;
@@ -169,7 +185,8 @@ function bindSaveButton() {
     };
 
     state.savedSessions.unshift(session);
-    state.savedSessions = state.savedSessions.slice(0, 5);
+    state.savedSessions = state.savedSessions.slice(0, 6);
+
     localStorage.setItem("debatejam_sessions", JSON.stringify(state.savedSessions));
     renderSavedSessions();
     showToast("Session saved on this device.");
@@ -191,7 +208,7 @@ function bindResetButton() {
       output.innerHTML = `
         <div class="empty-state">
           <span>Debate arena waiting</span>
-          <p>Enter a topic and choose a mode to generate your first training round.</p>
+          <p>Enter a topic, choose a mode, and generate a clean training round.</p>
         </div>
       `;
     }
@@ -200,17 +217,56 @@ function bindResetButton() {
   });
 }
 
+function bindSavedClearButton() {
+  const button = document.querySelector("#clearSavedBtn");
+  if (!button) return;
+
+  button.addEventListener("click", () => {
+    state.savedSessions = [];
+    localStorage.removeItem("debatejam_sessions");
+    renderSavedSessions();
+    showToast("Saved sessions cleared.");
+  });
+}
+
+function bindMagneticButtons() {
+  const buttons = document.querySelectorAll(".btn, .mode-btn, .saved-session");
+
+  buttons.forEach((button) => {
+    button.addEventListener("mousemove", (event) => {
+      const rect = button.getBoundingClientRect();
+      const x = event.clientX - rect.left - rect.width / 2;
+      const y = event.clientY - rect.top - rect.height / 2;
+
+      button.style.transform = `translate(${x * 0.035}px, ${y * 0.035}px)`;
+    });
+
+    button.addEventListener("mouseleave", () => {
+      button.style.transform = "";
+    });
+  });
+}
+
 function updateModePreview() {
   const mode = modes[state.activeMode];
   const preview = document.querySelector("#modePreview");
+  const modeTitle = document.querySelector("#modePreviewTitle");
+  const modeText = document.querySelector("#modePreviewText");
+  const modeNumber = document.querySelector("#modePreviewNumber");
 
-  if (!preview || !mode) return;
+  if (!mode) return;
 
-  preview.innerHTML = `
-    <span>${escapeHTML(mode.name)}</span>
-    <strong>${escapeHTML(mode.label)}</strong>
-    <p>This round focuses on ${escapeHTML(mode.focus)}.</p>
-  `;
+  if (preview) {
+    preview.innerHTML = `
+      <span class="eyebrow">${escapeHTML(mode.name)}</span>
+      <strong>${escapeHTML(mode.label)}</strong>
+      <p>This round focuses on ${escapeHTML(mode.focus)}.</p>
+    `;
+  }
+
+  if (modeTitle) modeTitle.textContent = mode.label;
+  if (modeText) modeText.textContent = `Focus: ${mode.focus}.`;
+  if (modeNumber) modeNumber.textContent = mode.accent;
 }
 
 function createTrainingSession(topic, stance) {
@@ -219,8 +275,7 @@ function createTrainingSession(topic, stance) {
 
   const mode = modes[state.activeMode];
   const score = generateScore(topic, stance);
-  const cleanTopic = escapeHTML(topic);
-  const cleanStance = stance ? escapeHTML(stance) : "Not stated yet";
+  const verdict = buildVerdict(score);
 
   state.weeklyUses += 1;
   localStorage.setItem("debatejam_weekly_uses", String(state.weeklyUses));
@@ -229,22 +284,28 @@ function createTrainingSession(topic, stance) {
   output.dataset.empty = "false";
   output.innerHTML = `
     <article class="training-session">
-      <div class="session-topline">
-        <span>${escapeHTML(mode.name)}</span>
-        <span>Score ${score}/100</span>
+      <div class="session-hero">
+        <span class="session-number">${escapeHTML(mode.accent)}</span>
+        <div>
+          <span class="eyebrow">${escapeHTML(mode.name)}</span>
+          <h3 id="generatedTitle">${escapeHTML(topic)}</h3>
+        </div>
       </div>
 
-      <h3 id="generatedTitle">${cleanTopic}</h3>
+      <div class="score-row">
+        <div>
+          <small>Argument score</small>
+          <strong>${score}/100</strong>
+        </div>
+        <div>
+          <small>Verdict</small>
+          <strong>${escapeHTML(verdict)}</strong>
+        </div>
+      </div>
 
-      <div class="session-grid">
-        <div>
-          <small>Your stance</small>
-          <p>${cleanStance}</p>
-        </div>
-        <div>
-          <small>Main focus</small>
-          <p>${escapeHTML(mode.focus)}</p>
-        </div>
+      <div class="coach-card">
+        <small>Your stance</small>
+        <p>${stance ? escapeHTML(stance) : "No stance entered yet. Start by turning the topic into one clear claim."}</p>
       </div>
 
       <div class="coach-card">
@@ -264,43 +325,57 @@ function createTrainingSession(topic, stance) {
         </ul>
       </div>
 
-      <div class="coach-card">
+      <div class="coach-card final-note">
         <small>Next improvement</small>
         <p>${buildImprovement(score)}</p>
       </div>
     </article>
   `;
 
+  output.animate(
+    [
+      { opacity: 0, transform: "translateY(16px)" },
+      { opacity: 1, transform: "translateY(0)" }
+    ],
+    { duration: 420, easing: "ease-out" }
+  );
+
   showToast(`${mode.name} session generated.`);
 }
 
 function buildOpeningMove(topic, stance) {
-  const claim = stance || `Take a clear position on "${topic}"`;
-  return `Start with one precise claim: “${escapeHTML(claim)}.” Then support it with one reason, one example, and one limit where your claim may not apply.`;
+  const claim = stance || `I believe ${topic}`;
+  return `Open with: “${escapeHTML(claim)}.” Then add one reason, one example, and one limit where the claim may not apply.`;
 }
 
 function buildCounterArgument(topic) {
-  return `A strong opponent would ask: “What evidence would prove that your view on ${escapeHTML(topic)} is wrong?” Prepare an answer before defending your position.`;
+  return `A strong opponent would ask: “What evidence would make your view on ${escapeHTML(topic)} weaker or false?” Prepare that answer before defending your point.`;
 }
 
 function buildImprovement(score) {
   if (score >= 82) {
-    return "Your argument has a strong shape. Now improve it by naming the best counterargument fairly before you respond.";
+    return "Your argument has a strong shape. Now improve it by naming the best counterargument fairly before responding.";
   }
 
   if (score >= 68) {
-    return "Your idea is usable, but it needs sharper proof. Add a concrete example and remove any vague claim that sounds true but is unsupported.";
+    return "Your idea is usable, but it needs sharper proof. Add one concrete example and remove any vague claim that sounds true but is unsupported.";
   }
 
   return "Your argument needs structure first. Rewrite it as: claim → reason → evidence → counterargument → response.";
 }
 
-function generateScore(topic, stance) {
-  let score = 58;
+function buildVerdict(score) {
+  if (score >= 82) return "Strong";
+  if (score >= 68) return "Promising";
+  return "Needs structure";
+}
 
-  if (topic.length > 25) score += 10;
+function generateScore(topic, stance) {
+  let score = 56;
+
+  if (topic.length > 24) score += 8;
   if (stance.length > 20) score += 12;
-  if (/\bbecause\b|\bsince\b|\btherefore\b|\bevidence\b/i.test(stance)) score += 10;
+  if (/\bbecause\b|\bsince\b|\btherefore\b|\bevidence\b|\bexample\b/i.test(stance)) score += 12;
   if (/\balways\b|\bnever\b|\beveryone\b|\bnobody\b/i.test(stance)) score -= 8;
 
   return Math.max(42, Math.min(96, score));
@@ -328,38 +403,41 @@ function renderSavedSessions() {
   if (!list) return;
 
   if (!state.savedSessions.length) {
-    list.innerHTML = `<p class="muted">Saved sessions will appear here on this device.</p>`;
+    list.innerHTML = `
+      <p class="muted">Saved sessions will appear here on this device.</p>
+    `;
     return;
   }
 
   list.innerHTML = state.savedSessions
     .map(
       (session) => `
-      <button class="saved-session" type="button" data-session-id="${escapeHTML(session.id)}">
-        <span>${escapeHTML(session.mode)}</span>
-        <strong>${escapeHTML(session.title)}</strong>
-        <small>${escapeHTML(session.createdAt)}</small>
-      </button>
-    `
+        <button class="saved-session" type="button" data-session-id="${escapeHTML(session.id)}">
+          <span>${escapeHTML(session.mode)}</span>
+          <strong>${escapeHTML(session.title)}</strong>
+          <small>${escapeHTML(session.createdAt)}</small>
+        </button>
+      `
     )
     .join("");
 
   list.querySelectorAll("[data-session-id]").forEach((button) => {
     button.addEventListener("click", () => {
       const session = state.savedSessions.find((item) => item.id === button.dataset.sessionId);
-      if (!session) return;
-
       const output = document.querySelector("#sessionOutput");
-      if (!output) return;
+
+      if (!session || !output) return;
 
       output.dataset.empty = "false";
       output.innerHTML = `
         <article class="training-session">
-          <div class="session-topline">
-            <span>${escapeHTML(session.mode)}</span>
-            <span>${escapeHTML(session.createdAt)}</span>
+          <div class="session-hero">
+            <span class="session-number">S</span>
+            <div>
+              <span class="eyebrow">${escapeHTML(session.mode)}</span>
+              <h3 id="generatedTitle">${escapeHTML(session.title)}</h3>
+            </div>
           </div>
-          <h3 id="generatedTitle">${escapeHTML(session.title)}</h3>
           <pre class="session-note">${escapeHTML(session.summary)}</pre>
         </article>
       `;
@@ -393,7 +471,7 @@ function revealOnScroll() {
         observer.unobserve(entry.target);
       });
     },
-    { threshold: 0.15 }
+    { threshold: 0.16 }
   );
 
   items.forEach((item) => observer.observe(item));
