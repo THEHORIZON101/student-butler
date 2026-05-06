@@ -1,590 +1,311 @@
-<!doctype html>
-<html lang="en" data-theme="dark">
+<!DOCTYPE html>
+<html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Orbit — Turn messy schoolwork into tonight’s study plan</title>
-  <meta
-    name="description"
-    content="Orbit helps students turn messy homework, notes, reminders, and tasks into a clear study plan for the night."
-  />
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Debate Gym — Train Your Arguments</title>
   <link rel="stylesheet" href="style.css" />
 </head>
-
 <body>
-  <a class="skip-link" href="#main">Skip to main content</a>
+  <header class="site-header">
+    <a class="brand" href="#top" aria-label="Debate Gym home">
+      <span class="brand-mark">DG</span>
+      <span>Debate Gym</span>
+    </a>
 
-  <header class="site-header" id="top">
-    <nav class="nav container" aria-label="Primary navigation">
-      <a class="brand" href="#top" aria-label="Orbit home">
-        <span class="orbit-mark" aria-hidden="true">
-          <svg viewBox="0 0 64 64" role="img" focusable="false">
-            <ellipse class="orbit-path" cx="32" cy="32" rx="23" ry="12" transform="rotate(-28 32 32)" />
-            <circle class="orbit-core" cx="32" cy="32" r="8" />
-            <circle class="orbit-node" cx="50" cy="20" r="4" />
-            <path class="orbit-check" d="M28.7 32.3l2.4 2.5 4.5-5" />
-          </svg>
-        </span>
-        <span class="brand-name">Orbit</span>
-      </a>
-
-      <button class="menu-toggle" id="menuToggle" type="button" aria-label="Open menu" aria-controls="navLinks" aria-expanded="false">
-        <span></span>
-        <span></span>
-      </button>
-
-      <div class="nav-links" id="navLinks">
-        <a href="#product">Product</a>
-        <a href="#demo">Demo</a>
-        <a href="#first-five">First 5</a>
-        <a href="#features">Features</a>
-        <a href="#pricing">Pricing</a>
-        <a href="#faq">FAQ</a>
-      </div>
-
-      <div class="nav-actions">
-        <button class="ghost-button theme-toggle" id="themeToggle" type="button" aria-label="Switch theme">
-          Light
-        </button>
-        <a class="small-cta" href="#demo">Try demo</a>
-      </div>
+    <nav class="nav-links" aria-label="Main navigation">
+      <a href="#trainer">Trainer</a>
+      <a href="#modes">Modes</a>
+      <a href="#pricing">Pricing</a>
+      <a href="#faq">FAQ</a>
     </nav>
+
+    <a class="btn btn-small btn-primary" href="#trainer">Start training</a>
   </header>
 
-  <main id="main">
+  <main id="top">
     <section class="hero section">
-      <div class="hero-grid container">
-        <div class="hero-copy reveal">
-          <p class="eyebrow">
-            <span class="pulse-dot" aria-hidden="true"></span>
-            Frontend-only planning demo
-          </p>
+      <div class="hero-copy reveal">
+        <p class="eyebrow">Argument training for clear thinkers</p>
+        <h1>Build sharper opinions under pressure.</h1>
+        <p class="hero-text">
+          Debate Gym turns any topic into a practice session with openings,
+          counterarguments, logic checks, evidence drills, pressure questions,
+          calm disagreement coaching, and a final score.
+        </p>
 
-          <h1>Turn the after-school pile into tonight’s orbit.</h1>
-
-          <p class="hero-lede">
-            Orbit helps students dump messy homework, worksheets, notes, reminders, and tasks into one place,
-            then organizes the night into what to do first, what to review, and how long it should take.
-          </p>
-
-          <div class="hero-actions" aria-label="Primary actions">
-            <a class="primary-button" href="#demo">Generate a study plan</a>
-            <a class="secondary-button" href="#pricing">See pricing</a>
-          </div>
-
-          <div class="trust-strip" aria-label="Product safeguards">
-            <span>No backend</span>
-            <span>No payments</span>
-            <span>Local browser storage</span>
-          </div>
+        <div class="hero-actions">
+          <a class="btn btn-primary" href="#trainer">Try the debate trainer</a>
+          <a class="btn btn-ghost" href="#modes">Explore sparring modes</a>
         </div>
 
-        <div class="hero-visual reveal" aria-label="Orbit product preview">
-          <div class="orbit-board">
-            <div class="board-glow" aria-hidden="true"></div>
+        <div class="hero-stats" aria-label="Debate Gym highlights">
+          <div><strong>5</strong><span>free practices / week</span></div>
+          <div><strong>6</strong><span>training modules</span></div>
+          <div><strong>Pro</strong><span>unlimited sparring</span></div>
+        </div>
+      </div>
 
-            <div class="board-topline">
-              <span>Tonight Plan</span>
-              <span class="status-pill">Organized</span>
-            </div>
+      <div class="hero-visual reveal" aria-label="Debate Gym product preview">
+        <div class="orb orb-one"></div>
+        <div class="orb orb-two"></div>
 
-            <div class="mess-stack" aria-label="Messy input examples">
-              <div class="mess-card tilted-left">
-                <span>math worksheet due tomorrow</span>
-              </div>
-              <div class="mess-card">
-                <span>read history chapter 8 + quiz?</span>
-              </div>
-              <div class="mess-card tilted-right">
-                <span>english draft, vocab, lab sheet</span>
-              </div>
-            </div>
-
-            <div class="orbit-divider">
-              <span></span>
-              <strong>Orbit sorts the night</strong>
-              <span></span>
-            </div>
-
-            <div class="plan-preview">
-              <div class="preview-row priority">
-                <span class="preview-number">01</span>
-                <div>
-                  <strong>Math first</strong>
-                  <small>35 min · due soon</small>
-                </div>
-              </div>
-
-              <div class="preview-row">
-                <span class="preview-number">02</span>
-                <div>
-                  <strong>English draft</strong>
-                  <small>30 min · deep work</small>
-                </div>
-              </div>
-
-              <div class="preview-row">
-                <span class="preview-number">03</span>
-                <div>
-                  <strong>History review</strong>
-                  <small>15 min · review queue</small>
-                </div>
-              </div>
-            </div>
+        <div class="mockup-card main-mockup">
+          <div class="mockup-top">
+            <span></span><span></span><span></span>
           </div>
+          <div class="score-ring">
+            <span id="heroScore">84</span>
+            <small>clarity score</small>
+          </div>
+          <h2>Should schools ban phones?</h2>
+          <p>Opening: clear claim, stronger warrant needed, evidence missing.</p>
+          <div class="meter"><span style="width: 84%"></span></div>
+        </div>
+
+        <div class="floating-card float-a">
+          <small>Opponent Mode</small>
+          <strong>“What about emergencies?”</strong>
+        </div>
+
+        <div class="floating-card float-b">
+          <small>Logic Coach</small>
+          <strong>Weak causal link detected</strong>
         </div>
       </div>
     </section>
 
-    <section class="section product-section" id="product">
+    <section class="section problem-section">
+      <div class="container two-col">
+        <div class="section-copy reveal">
+          <p class="eyebrow">The problem</p>
+          <h2>Most people have opinions. Fewer can defend them well.</h2>
+        </div>
+        <div class="problem-grid reveal">
+          <article class="mini-card">Explain a position clearly</article>
+          <article class="mini-card">Spot weak reasoning</article>
+          <article class="mini-card">Answer counterarguments</article>
+          <article class="mini-card">Check evidence quality</article>
+          <article class="mini-card">Change your mind when needed</article>
+          <article class="mini-card">Stay calm under pressure</article>
+        </div>
+      </div>
+    </section>
+
+    <section id="trainer" class="section trainer-section">
       <div class="container">
         <div class="section-heading reveal">
-          <p class="eyebrow">The problem</p>
-          <h2>Students do not need another blank planner.</h2>
+          <p class="eyebrow">Interactive trainer</p>
+          <h2>Turn any topic into a debate workout.</h2>
           <p>
-            After school, the hard part is converting scattered assignments,
-            reminders, and loose notes into the next obvious action.
+            This static demo generates structured practice feedback in your browser.
+            Real AI, accounts, payments, and school team reports would require a backend.
           </p>
         </div>
 
-        <div class="flow-grid">
-          <article class="flow-card reveal">
-            <span class="flow-number">1</span>
-            <h3>Dump the mess</h3>
-            <p>Paste assignments, reminders, worksheet notes, due dates, and half-formed thoughts.</p>
-          </article>
+        <div class="trainer-shell reveal">
+          <form id="debateForm" class="trainer-panel">
+            <label for="topic">Topic</label>
+            <textarea id="topic" rows="3" placeholder="Example: Should schools ban phones?"></textarea>
 
-          <article class="flow-card reveal">
-            <span class="flow-number">2</span>
-            <h3>Orbit detects structure</h3>
-            <p>The demo uses transparent JavaScript rules to identify subjects, urgency, review items, and rough study time.</p>
-          </article>
+            <label for="stance">Your stance</label>
+            <select id="stance">
+              <option value="support">I support it</option>
+              <option value="oppose">I oppose it</option>
+              <option value="balanced">Make me argue both sides</option>
+            </select>
 
-          <article class="flow-card reveal">
-            <span class="flow-number">3</span>
-            <h3>Start the night</h3>
-            <p>Get a priority order, review queue, first five-minute action, and a focus plan.</p>
-          </article>
-        </div>
-      </div>
-    </section>
-
-    <section class="section demo-section" id="demo">
-      <div class="container">
-        <div class="section-heading narrow reveal">
-          <p class="eyebrow">Working frontend-only demo</p>
-          <h2>Paste the homework pile. Get a usable night plan.</h2>
-          <p>
-            This demo does not call an AI API, upload files, read images, or send your schoolwork anywhere.
-            It simulates planning with local JavaScript rules.
-          </p>
-        </div>
-
-        <div class="demo-shell">
-          <section class="input-panel reveal" aria-labelledby="plannerTitle">
-            <div class="panel-header">
-              <div>
-                <p class="overline">Messy school dump</p>
-                <h3 id="plannerTitle">What came home today?</h3>
-              </div>
-              <span class="local-pill">Local only</span>
+            <label>Sparring mode</label>
+            <div class="mode-picker" id="modePicker" role="radiogroup" aria-label="Choose sparring mode">
+              <button type="button" class="mode-pill active" data-mode="Logic Coach">Logic Coach</button>
+              <button type="button" class="mode-pill" data-mode="Opponent">Opponent</button>
+              <button type="button" class="mode-pill" data-mode="Judge">Judge</button>
+              <button type="button" class="mode-pill" data-mode="Evidence">Evidence</button>
+              <button type="button" class="mode-pill" data-mode="Calm">Calm</button>
+              <button type="button" class="mode-pill pro-only" data-mode="Speed Practice">Speed Practice <span>Pro</span></button>
             </div>
 
-            <label class="textarea-label" for="planInput">
-              Paste homework, notes, worksheets, reminders, or tasks
-            </label>
-
-            <textarea
-              id="planInput"
-              rows="12"
-              spellcheck="true"
-              placeholder="Example:
-- algebra worksheet p. 42 problems 1-18 due tomorrow
-- English essay intro paragraph
-- biology quiz Friday, review cell notes
-- history read chapter 8 and answer 5 questions
-- pack permission slip"
-            ></textarea>
-
-            <div class="demo-actions">
-              <button class="secondary-button" id="sampleInput" type="button">Use sample mess</button>
-              <button class="ghost-button" id="clearInput" type="button">Clear</button>
-              <button class="primary-button" id="generatePlan" type="button">Generate study plan</button>
+            <div class="trainer-actions">
+              <button class="btn btn-primary" type="submit">Generate workout</button>
+              <button class="btn btn-ghost" type="button" id="useExample">Use example</button>
             </div>
 
-            <p class="input-hint" id="inputHint" aria-live="polite">
-              Tip: messy is fine. Put each assignment on its own line when possible.
+            <p class="usage-note">
+              Free plan: <strong id="usesLeft">5</strong> practices left this week.
             </p>
+          </form>
 
-            <p class="usage-note" id="usageCount" aria-live="polite"></p>
-          </section>
-
-          <section class="result-panel reveal" id="resultPanel" aria-labelledby="resultTitle">
-            <div class="result-empty" id="resultEmpty">
-              <span class="empty-orbit" aria-hidden="true"></span>
-              <h3 id="resultTitle">Your plan will appear here.</h3>
-              <p>
-                Orbit will show detected subjects, priority order, estimated time,
-                first action, review queue, and a quick focus plan.
-              </p>
+          <section class="output-panel" aria-live="polite">
+            <div id="emptyState" class="empty-state">
+              <span class="empty-icon">◌</span>
+              <h3>Your debate workout will appear here.</h3>
+              <p>Enter a topic, choose a sparring mode, and run a session.</p>
             </div>
 
-            <div class="result-content" id="resultContent" hidden>
+            <div id="loadingState" class="loading-state hidden">
+              <div class="loader"></div>
+              <p>Building your argument workout...</p>
+            </div>
+
+            <div id="resultState" class="result-state hidden">
               <div class="result-header">
                 <div>
-                  <p class="overline">Generated plan</p>
-                  <h3>Tonight’s study orbit</h3>
+                  <p class="eyebrow" id="resultMode">Logic Coach</p>
+                  <h3 id="resultTopic">Should schools ban phones?</h3>
                 </div>
-                <div class="time-chip">
-                  <span id="totalTime">0 min</span>
-                  <small>estimated</small>
+                <div class="score-badge">
+                  <strong id="finalScore">82</strong>
+                  <span>score</span>
                 </div>
               </div>
 
               <div class="result-grid">
-                <article class="result-block">
-                  <h4>Detected subjects</h4>
-                  <div class="chip-list" id="subjectList"></div>
+                <article class="result-card">
+                  <h4>Opening argument</h4>
+                  <p id="openingText"></p>
                 </article>
-
-                <article class="result-block accent-block">
-                  <h4>First 5-minute action</h4>
-                  <p id="firstActionText"></p>
+                <article class="result-card">
+                  <h4>Strongest opposition</h4>
+                  <p id="oppositionText"></p>
                 </article>
-              </div>
-
-              <article class="result-block full">
-                <h4>Priority order</h4>
-                <ol class="priority-list" id="priorityList"></ol>
-              </article>
-
-              <div class="result-grid">
-                <article class="result-block">
-                  <h4>Review queue</h4>
-                  <ul class="simple-list" id="reviewQueue"></ul>
+                <article class="result-card">
+                  <h4>Logic flaw check</h4>
+                  <p id="logicText"></p>
                 </article>
-
-                <article class="result-block">
-                  <h4>Quick focus plan</h4>
-                  <ul class="simple-list" id="focusPlan"></ul>
+                <article class="result-card">
+                  <h4>Counterargument drill</h4>
+                  <p id="counterText"></p>
+                </article>
+                <article class="result-card">
+                  <h4>Evidence check</h4>
+                  <p id="evidenceText"></p>
+                </article>
+                <article class="result-card">
+                  <h4>Pressure question</h4>
+                  <p id="pressureText"></p>
                 </article>
               </div>
 
-              <article class="orbit-card" id="orbitCard" hidden>
-                <div class="orbit-card-top">
-                  <div>
-                    <p class="overline">Signature feature</p>
-                    <h4>Tonight Orbit Card</h4>
-                    <p>
-                      A local checklist for actually moving through the plan.
-                      Progress saves in this browser only.
-                    </p>
-                  </div>
-
-                  <div class="progress-ring" id="cardProgressRing" style="--progress: 0deg;" aria-label="Checklist progress">
-                    <span id="cardProgressValue">0%</span>
-                  </div>
-                </div>
-
-                <div class="card-meta">
-                  <span id="topTaskBadge">Top task</span>
-                  <span id="activeSubjectBadge">Subjects</span>
-                  <span id="generatedDate">Saved locally</span>
-                </div>
-
-                <ul class="checklist" id="cardChecklist"></ul>
-
-                <div class="card-actions">
-                  <button class="secondary-button" id="copyPlan" type="button">Copy plan</button>
-                  <button class="ghost-button" id="clearSavedPlan" type="button">Clear saved card</button>
-                </div>
-
-                <p class="save-status" id="saveStatus" aria-live="polite"></p>
-              </article>
+              <div class="feedback-bar">
+                <button class="btn btn-ghost" type="button" id="copyFeedback">Copy feedback</button>
+                <button class="btn btn-ghost" type="button" id="resetUsage">Reset demo limit</button>
+              </div>
             </div>
           </section>
         </div>
       </div>
     </section>
 
-    <section class="section first-five-section" id="first-five">
-      <div class="container first-five-grid">
+    <section id="modes" class="section modes-section">
+      <div class="container">
         <div class="section-heading reveal">
-          <p class="eyebrow">The first 5 minutes</p>
-          <h2>The night gets easier when the first action is tiny.</h2>
-          <p>
-            Orbit is built around the moment students arrive home tired and overloaded.
-            Instead of asking for perfect planning, it creates the first small move.
-          </p>
+          <p class="eyebrow">Sparring modes</p>
+          <h2>Practice the exact debate skill you are weak at.</h2>
         </div>
 
-        <div class="first-five-card reveal">
-          <div class="first-five-timer" aria-hidden="true">
-            <span>5</span>
-            <small>min</small>
-          </div>
-
-          <div>
-            <h3>Start with this:</h3>
-            <p id="dynamicFiveAction">
-              Clear one workspace, put your phone away, open the assignment that feels most urgent,
-              and do the smallest visible step for five minutes.
-            </p>
-          </div>
-
-          <div class="micro-steps">
-            <span>Clear desk</span>
-            <span>Open top task</span>
-            <span>Start timer</span>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <section class="section features-section" id="features">
-      <div class="container">
-        <div class="section-heading narrow reveal">
-          <p class="eyebrow">Features</p>
-          <h2>Made for the real school-night workflow.</h2>
-          <p>
-            Orbit focuses on the few planning moments that matter most after school:
-            capture, order, start, review, and repeat.
-          </p>
-        </div>
-
-        <div class="feature-grid">
-          <article class="feature-card reveal">
-            <span class="feature-icon">↯</span>
-            <h3>Mess-tolerant capture</h3>
-            <p>Students can paste rough notes without cleaning them up first.</p>
+        <div class="mode-grid">
+          <article class="mode-card reveal">
+            <span>01</span>
+            <h3>Logic Coach</h3>
+            <p>Find weak reasoning, shaky assumptions, false cause, overgeneralizing, and unclear claims.</p>
           </article>
-
-          <article class="feature-card reveal">
-            <span class="feature-icon">01</span>
-            <h3>Priority order</h3>
-            <p>Due-soon tasks, tests, worksheets, and projects move higher in the plan.</p>
+          <article class="mode-card reveal">
+            <span>02</span>
+            <h3>Opponent Mode</h3>
+            <p>Attack your argument with the strongest fair counterpoints so you can repair weak spots.</p>
           </article>
-
-          <article class="feature-card reveal">
-            <span class="feature-icon">⟳</span>
-            <h3>Review queue</h3>
-            <p>Quizzes, tests, vocab, and study items become a short review list.</p>
+          <article class="mode-card reveal">
+            <span>03</span>
+            <h3>Judge Mode</h3>
+            <p>Force both sides, compare tradeoffs, and learn when the other side has stronger evidence.</p>
           </article>
-
-          <article class="feature-card reveal">
-            <span class="feature-icon">◷</span>
-            <h3>Focus blocks</h3>
-            <p>The night is broken into realistic sprints, breaks, and wrap-up time.</p>
+          <article class="mode-card reveal">
+            <span>04</span>
+            <h3>Evidence Mode</h3>
+            <p>Push every major claim to prove itself with data, examples, sources, and uncertainty.</p>
           </article>
-
-          <article class="feature-card reveal">
-            <span class="feature-icon">⌁</span>
-            <h3>Local progress</h3>
-            <p>The demo saves the current Orbit Card locally, no account required.</p>
+          <article class="mode-card reveal">
+            <span>05</span>
+            <h3>Calm Mode</h3>
+            <p>Practice respectful disagreement, charitable wording, and emotionally controlled responses.</p>
           </article>
-
-          <article class="feature-card reveal">
-            <span class="feature-icon">◇</span>
-            <h3>Honest roadmap</h3>
-            <p>Future AI extraction and image/PDF support are labeled as future features, not faked.</p>
+          <article class="mode-card pro-card reveal">
+            <span>Pro</span>
+            <h3>Speed Practice</h3>
+            <p>Timed pressure rounds for interviews, debate clubs, presentations, and high-stakes conversations.</p>
           </article>
         </div>
       </div>
     </section>
 
-    <section class="section pricing-section" id="pricing">
+    <section id="pricing" class="section pricing-section">
       <div class="container">
-        <div class="section-heading narrow reveal">
-          <p class="eyebrow">Pricing and upgrade path</p>
-          <h2>Free to start. Paid plans fund better planning.</h2>
-          <p>
-            This static website does not process payments or collect cards. Pricing buttons open
-            an honest coming-soon message and can save plan interest locally in your browser.
-          </p>
+        <div class="section-heading reveal">
+          <p class="eyebrow">Pricing</p>
+          <h2>Start free. Upgrade when debate practice becomes a habit.</h2>
         </div>
 
         <div class="pricing-grid">
           <article class="pricing-card reveal">
-            <div class="pricing-top">
-              <h3>Free</h3>
-              <p>For trying Orbit after school.</p>
-            </div>
-            <div class="price">$0</div>
+            <p class="plan-label">Free</p>
+            <h3>$0</h3>
+            <p>For trying debate practice and improving basic argument structure.</p>
             <ul>
-              <li>3 study plans per week</li>
-              <li>Basic planning</li>
-              <li>Local progress only</li>
+              <li>5 debate practices per week</li>
+              <li>Basic scoring</li>
+              <li>Core sparring modes</li>
+              <li>Copyable feedback</li>
             </ul>
-            <button class="plan-button secondary-button pricing-action" type="button" data-plan="Free">
-              Start Free
-            </button>
+            <a class="btn btn-ghost" href="#trainer">Use free trainer</a>
           </article>
 
           <article class="pricing-card featured reveal">
-            <div class="pricing-badge">Most useful</div>
-            <div class="pricing-top">
-              <h3>Orbit Plus</h3>
-              <p>For students who plan most nights.</p>
-            </div>
-            <div class="price">$6<span>/mo</span></div>
+            <p class="plan-label">Pro</p>
+            <h3>$12<span>/mo</span></h3>
+            <p>For students, creators, professionals, and teams who practice often.</p>
             <ul>
-              <li>Unlimited study plans</li>
-              <li>Saved study history</li>
-              <li>Better review tools</li>
-              <li>Focus mode</li>
-              <li>Weekly progress summary</li>
+              <li>Unlimited debates</li>
+              <li>Advanced debate coaches</li>
+              <li>Speed practice mode</li>
+              <li>School team accounts</li>
+              <li>Export feedback and reports</li>
             </ul>
-            <button class="plan-button primary-button pricing-action" type="button" data-plan="Orbit Plus">
-              Choose Plus
-            </button>
+            <button class="btn btn-primary" type="button" id="proButton">Upgrade to Pro</button>
+            <small class="payment-note">Demo only: real payments need Stripe + backend verification.</small>
           </article>
-
-          <article class="pricing-card reveal">
-            <div class="pricing-top">
-              <h3>Orbit Pro</h3>
-              <p>For power users and future advanced tools.</p>
-            </div>
-            <div class="price">$12<span>/mo</span></div>
-            <ul>
-              <li>Deeper planning</li>
-              <li>Advanced review queue</li>
-              <li>Priority support</li>
-              <li>Future AI extraction tools</li>
-              <li>Future image/PDF support</li>
-            </ul>
-            <button class="plan-button secondary-button pricing-action" type="button" data-plan="Orbit Pro">
-              Choose Pro
-            </button>
-          </article>
-        </div>
-
-        <div class="monetization-card reveal">
-          <div>
-            <p class="overline">Monetization, honestly</p>
-            <h3>What paid plans would actually fund</h3>
-          </div>
-          <p>
-            Orbit can be useful as a local planning tool today. Paid plans would support real accounts,
-            reliable saved history across devices, deeper review tools, future AI extraction, and future
-            image/PDF support. Those features require backend infrastructure and are not faked here.
-          </p>
-          <p class="pricing-interest" id="pricingInterestStatus" aria-live="polite"></p>
         </div>
       </div>
     </section>
 
-    <section class="section faq-section" id="faq">
-      <div class="container faq-grid">
+    <section id="faq" class="section faq-section">
+      <div class="container narrow">
         <div class="section-heading reveal">
           <p class="eyebrow">FAQ</p>
-          <h2>Clear answers before launch.</h2>
-          <p>
-            Orbit helps students know what to do first without pretending this static site is a full backend product.
-          </p>
+          <h2>Built to train better thinking, not louder arguing.</h2>
         </div>
 
-        <div class="faq-list">
-          <details class="faq-item reveal">
-            <summary>Does this demo use real AI?</summary>
-            <p>No. The demo uses transparent frontend JavaScript rules. A production version could add real AI later with a backend.</p>
-          </details>
-
-          <details class="faq-item reveal">
-            <summary>Does Orbit upload my schoolwork?</summary>
-            <p>No. This GitHub Pages version runs in your browser. The saved Orbit Card uses localStorage on your device only.</p>
-          </details>
-
-          <details class="faq-item reveal">
-            <summary>Can it read worksheets, images, or PDFs?</summary>
-            <p>Not in this static demo. Image/PDF support is listed as a future Pro feature because it would require additional infrastructure.</p>
-          </details>
-
-          <details class="faq-item reveal">
-            <summary>Are payments active?</summary>
-            <p>No. Pricing buttons only open a coming-soon modal. They do not collect payment, credit cards, passwords, or account information.</p>
-          </details>
-
-          <details class="faq-item reveal">
-            <summary>Why use Orbit instead of a normal to-do list?</summary>
-            <p>A to-do list stores tasks. Orbit turns the pile into a sequence: what matters first, how long it may take, and how to start.</p>
-          </details>
-        </div>
-      </div>
-    </section>
-
-    <section class="section final-cta-section">
-      <div class="container">
-        <div class="final-cta reveal">
-          <div>
-            <p class="eyebrow">Ready for tonight?</p>
-            <h2>Dump the school day. Start the next five minutes.</h2>
-            <p>
-              Try the static planner, generate a Tonight Orbit Card, and feel what the product does before any account or payment exists.
-            </p>
-          </div>
-
-          <div class="final-actions">
-            <a class="primary-button" href="#demo">Generate my first plan</a>
-            <a class="secondary-button" href="#pricing">View plans</a>
-          </div>
-        </div>
+        <details class="faq-item reveal">
+          <summary>Does Debate Gym pick a side for me?</summary>
+          <p>No. It helps you explain your side, understand the opposing side, and update your position when evidence is stronger.</p>
+        </details>
+        <details class="faq-item reveal">
+          <summary>Is the Pro tier fully working in this static version?</summary>
+          <p>No. This version shows the product experience. Real usage limits, paid plans, school accounts, and report exports need authentication, a database, Stripe, and server-side verification.</p>
+        </details>
+        <details class="faq-item reveal">
+          <summary>Who is this for?</summary>
+          <p>Students, debate clubs, creators, professionals, teachers, and anyone who wants to explain ideas clearly under pressure.</p>
+        </details>
       </div>
     </section>
   </main>
 
   <footer class="site-footer">
-    <div class="container footer-grid">
-      <a class="brand footer-brand" href="#top" aria-label="Orbit home">
-        <span class="orbit-mark" aria-hidden="true">
-          <svg viewBox="0 0 64 64" role="img" focusable="false">
-            <ellipse class="orbit-path" cx="32" cy="32" rx="23" ry="12" transform="rotate(-28 32 32)" />
-            <circle class="orbit-core" cx="32" cy="32" r="8" />
-            <circle class="orbit-node" cx="50" cy="20" r="4" />
-            <path class="orbit-check" d="M28.7 32.3l2.4 2.5 4.5-5" />
-          </svg>
-        </span>
-        <span class="brand-name">Orbit</span>
-      </a>
-
-      <p>
-        A static GitHub Pages product site and frontend demo.
-        No backend, no API keys, no real payments.
-      </p>
-
-      <div class="footer-links">
-        <a href="#product">Product</a>
-        <a href="#demo">Demo</a>
-        <a href="#pricing">Pricing</a>
-        <a href="#faq">FAQ</a>
-      </div>
-    </div>
+    <p>Debate Gym — train clarity, logic, evidence, and calm disagreement.</p>
+    <a href="#top">Back to top</a>
   </footer>
 
-  <div class="modal" id="pricingModal" hidden>
-    <div class="modal-backdrop" data-close-modal></div>
-
-    <div class="modal-panel" role="dialog" aria-modal="true" aria-labelledby="modalTitle" tabindex="-1">
-      <button class="modal-close" type="button" aria-label="Close modal" data-close-modal>×</button>
-
-      <p class="eyebrow">Payments coming soon</p>
-      <h2 id="modalTitle">Orbit plan</h2>
-      <p id="modalText">
-        This static GitHub Pages site does not process payments.
-      </p>
-
-      <div class="modal-note">
-        <strong>No checkout here.</strong>
-        <span>No credit card fields, no fake subscription, and no account creation.</span>
-      </div>
-
-      <div class="modal-actions">
-        <button class="primary-button" id="saveInterest" type="button">Save interest locally</button>
-        <button class="secondary-button" type="button" data-close-modal>Close</button>
-      </div>
-
-      <p class="save-status" id="interestStatus" aria-live="polite"></p>
-    </div>
-  </div>
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
 
   <script src="script.js"></script>
 </body>
