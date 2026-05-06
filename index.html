@@ -4,546 +4,273 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>DebateJam — Train Your Thinking</title>
-  <meta
-    name="description"
-    content="DebateJam helps people argue, explain, defend, and sharpen ideas through interactive debate training sessions."
-  />
-
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link
-    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap"
-    rel="stylesheet"
-  />
-
+  <meta name="description" content="DebateJam turns any topic into a debate training session for clearer arguments, stronger evidence, and better thinking under pressure." />
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-
   <div class="toast" id="toast"></div>
 
   <nav class="nav">
-    <div class="logo">
-      <div class="logo-mark"></div>
-      <span>DebateJam</span>
-    </div>
+    <a href="#" class="logo">DebateJam</a>
 
     <div class="nav-links">
-      <a href="#demo">Demo</a>
+      <a href="#demo">Practice</a>
       <a href="#modes">Modes</a>
-      <a href="#pricing">Pricing</a>
-      <a href="#saved">Sessions</a>
+      <a href="#pricing">Prices</a>
+      <a href="#saved">Saved</a>
     </div>
 
-    <a href="#demo" class="btn btn-primary">Start Training</a>
+    <a href="#demo" class="btn btn-primary">Start</a>
   </nav>
 
   <main>
-
-    <!-- HERO -->
-
     <section class="hero">
       <div class="container hero-grid">
-
         <div data-reveal>
-          <div class="kicker">
-            Real-time argument training
-          </div>
+          <div class="kicker">Argument training system</div>
 
           <h1>
-            Think <span>clearer.</span><br />
-            Defend ideas<br />
-            under pressure.
+            Debate<br />
+            <span>Jam</span>
           </h1>
 
           <p class="hero-copy">
-            DebateJam turns any topic into a debate training session.
-            Practice explaining ideas, spotting weak logic,
-            handling counterarguments, and changing your mind when evidence is stronger.
+            “Most people have opinions. DebateJam trains the skill behind them:
+            explaining clearly, defending calmly, spotting weak logic, and changing
+            your mind when stronger evidence appears.”
           </p>
 
           <div class="hero-actions">
-            <a href="#demo" class="btn btn-primary">
-              Start a DebateJam
-            </a>
-
-            <a href="#pricing" class="btn btn-secondary">
-              View Pro Features
-            </a>
-          </div>
-
-          <div class="hero-stats">
-            <div class="stat">
-              <strong>5 Modes</strong>
-              <span>Train different thinking skills</span>
-            </div>
-
-            <div class="stat">
-              <strong>Pressure-Based</strong>
-              <span>Learn to think in real debates</span>
-            </div>
-
-            <div class="stat">
-              <strong>Instant Feedback</strong>
-              <span>Improve clarity and reasoning</span>
-            </div>
+            <a href="#demo" class="btn btn-primary">Read More</a>
+            <a href="#modes" class="btn btn-secondary">Explore Modes</a>
           </div>
         </div>
 
         <div class="arena" data-reveal>
-
           <div class="debate-stack">
-
             <article class="debate-card">
-              <small>Claim Mode</small>
-              <strong>“Make the argument more precise.”</strong>
+              <small>#99CDD8</small>
+              <strong>Claim Mode</strong>
             </article>
 
             <article class="debate-card">
-              <small>Evidence Mode</small>
-              <strong>“What proof actually supports this?”</strong>
+              <small>#DAEBE3</small>
+              <strong>Evidence Mode</strong>
             </article>
 
             <article class="debate-card">
-              <small>Judge Mode</small>
-              <strong>“Which side is more convincing?”</strong>
+              <small>#FDE8D3</small>
+              <strong>Judge Mode</strong>
             </article>
 
             <article class="debate-card">
-              <small>Opponent Mode</small>
-              <strong>“Attack the weakest point.”</strong>
+              <small>#F3C3B2</small>
+              <strong>Opponent Mode</strong>
+            </article>
+
+            <article class="debate-card">
+              <small>#CFD8C4</small>
+              <strong>Logic Coach</strong>
             </article>
 
             <article class="debate-card dark">
-              <small>Logic Coach</small>
-              <strong>“Separate emotion from reasoning.”</strong>
+              <small>#657166</small>
+              <strong>Pressure Practice</strong>
             </article>
-
           </div>
-
         </div>
-
       </div>
     </section>
 
-    <!-- DEMO -->
-
     <section class="section" id="demo">
       <div class="container">
-
         <div class="section-header" data-reveal>
-          <h2>
-            Turn any topic into a training session.
-          </h2>
-
+          <h2>Sounds like clear thinking.</h2>
           <p>
-            Most people have opinions. Few people can explain,
-            defend, and improve them under pressure.
-            DebateJam trains the thinking behind the argument.
+            Type a topic, choose a training mode, and DebateJam turns it into
+            a focused practice round with scoring, counterpressure, and coaching drills.
           </p>
         </div>
 
         <div class="demo-shell">
-
-          <!-- LEFT -->
-
           <div class="panel" data-reveal>
-
             <form id="debateForm">
-
               <div class="field">
                 <label for="topicInput">Debate topic</label>
-
-                <textarea
-                  id="topicInput"
-                  placeholder="Example: Social media should require age verification."
-                ></textarea>
+                <textarea id="topicInput" placeholder="Example: Schools should limit phone use during class."></textarea>
               </div>
 
               <div class="field">
                 <label for="stanceInput">Your current stance</label>
-
-                <input
-                  type="text"
-                  id="stanceInput"
-                  placeholder="Example: It protects younger users from harmful content."
-                />
+                <input id="stanceInput" type="text" placeholder="Example: It helps students focus because..." />
               </div>
 
               <div class="field">
-                <label>Choose a mode</label>
-
+                <label>Choose mode</label>
                 <div class="mode-grid">
-
-                  <button
-                    type="button"
-                    class="mode-btn is-active"
-                    data-mode="logic"
-                  >
-                    Logic
-                  </button>
-
-                  <button
-                    type="button"
-                    class="mode-btn"
-                    data-mode="opponent"
-                  >
-                    Opponent
-                  </button>
-
-                  <button
-                    type="button"
-                    class="mode-btn"
-                    data-mode="judge"
-                  >
-                    Judge
-                  </button>
-
-                  <button
-                    type="button"
-                    class="mode-btn"
-                    data-mode="evidence"
-                  >
-                    Evidence
-                  </button>
-
-                  <button
-                    type="button"
-                    class="mode-btn"
-                    data-mode="claim"
-                  >
-                    Claim
-                  </button>
-
+                  <button type="button" class="mode-btn is-active" data-mode="logic">Logic</button>
+                  <button type="button" class="mode-btn" data-mode="opponent">Opponent</button>
+                  <button type="button" class="mode-btn" data-mode="judge">Judge</button>
+                  <button type="button" class="mode-btn" data-mode="evidence">Evidence</button>
+                  <button type="button" class="mode-btn" data-mode="claim">Claim</button>
                 </div>
-
               </div>
 
               <div class="form-actions">
-                <button type="submit" class="btn btn-primary">
-                  Generate Session
-                </button>
-
-                <button
-                  type="button"
-                  class="btn btn-soft"
-                  id="sampleTopicBtn"
-                >
-                  Use Sample Topic
-                </button>
-
-                <button
-                  type="button"
-                  class="btn btn-secondary"
-                  id="resetSessionBtn"
-                >
-                  Reset
-                </button>
+                <button type="submit" class="btn btn-primary">Generate</button>
+                <button type="button" class="btn btn-soft" id="sampleTopicBtn">Sample</button>
+                <button type="button" class="btn btn-secondary" id="resetSessionBtn">Reset</button>
               </div>
-
             </form>
 
-            <div class="mode-preview" id="modePreview">
-              <span>Logic Coach</span>
-              <strong>Find weak reasoning</strong>
-              <p>
-                This round focuses on clarity, assumptions, and logical gaps.
-              </p>
-            </div>
-
+            <div class="mode-preview" id="modePreview"></div>
           </div>
 
-          <!-- RIGHT -->
-
           <div class="panel output-panel" data-reveal>
-
             <div class="output-head">
-
               <div>
-                <h3>Training Output</h3>
-
-                <p>
-                  DebateJam builds an interactive argument practice round
-                  from your topic.
-                </p>
+                <h3>Practice Output</h3>
+                <p>Feedback appears here after you generate a session.</p>
               </div>
 
               <div class="usage">
                 <p id="usageText">0/5 free weekly practices used</p>
-
                 <div class="usage-track">
                   <span class="usage-fill" id="usageBar"></span>
                 </div>
               </div>
-
             </div>
 
             <div id="sessionOutput" data-empty="true">
-
               <div class="empty-state">
                 <div>
                   <span>Debate arena waiting</span>
-
-                  <p>
-                    Enter a topic and choose a mode to generate your first training round.
-                  </p>
+                  <p>Enter a topic, choose a mode, and generate a clean training round.</p>
                 </div>
               </div>
-
             </div>
 
-            <div class="output-actions" style="margin-top: 18px;">
-
-              <button
-                type="button"
-                class="btn btn-primary"
-                id="saveSessionBtn"
-              >
-                Save Session
-              </button>
-
-              <button
-                type="button"
-                class="btn btn-secondary"
-                id="copySessionBtn"
-              >
-                Copy Session
-              </button>
-
+            <div class="output-actions" style="margin-top: 22px;">
+              <button type="button" class="btn btn-primary" id="saveSessionBtn">Save</button>
+              <button type="button" class="btn btn-secondary" id="copySessionBtn">Copy</button>
             </div>
-
           </div>
-
         </div>
-
       </div>
     </section>
 
-    <!-- MODES -->
-
     <section class="section" id="modes">
       <div class="container">
-
         <div class="section-header" data-reveal>
-          <h2>
-            Train different parts of thinking.
-          </h2>
-
+          <h2>Magical experience for arguments.</h2>
           <p>
-            DebateJam is not just “winning arguments.”
-            It trains clarity, reasoning, evidence, pressure handling,
-            and intellectual honesty.
+            Each mode trains a different thinking muscle, from evidence quality
+            to fair judging and pressure defense.
           </p>
         </div>
 
         <div class="card-grid">
-
           <article class="feature-card" data-reveal>
             <span>01</span>
             <h3>Logic Coach</h3>
-            <p>
-              Detect assumptions, contradictions,
-              emotional reasoning, and weak structure.
-            </p>
+            <p>Spot weak assumptions, vague claims, and broken reasoning.</p>
           </article>
 
           <article class="feature-card" data-reveal>
             <span>02</span>
             <h3>Opponent Mode</h3>
-            <p>
-              Face the strongest counterargument instead of easy agreement.
-            </p>
+            <p>Practice defending your idea against the strongest counterargument.</p>
           </article>
 
           <article class="feature-card" data-reveal>
             <span>03</span>
             <h3>Judge Mode</h3>
-            <p>
-              Learn how to evaluate both sides fairly instead of arguing blindly.
-            </p>
+            <p>Score both sides fairly and learn what actually makes a case stronger.</p>
           </article>
 
           <article class="feature-card" data-reveal>
             <span>04</span>
             <h3>Evidence Mode</h3>
-            <p>
-              Practice using stronger proof, examples, and factual support.
-            </p>
+            <p>Upgrade weak proof into specific examples, facts, and credibility.</p>
           </article>
 
           <article class="feature-card" data-reveal>
             <span>05</span>
             <h3>Claim Mode</h3>
-            <p>
-              Sharpen vague opinions into clean, debatable claims.
-            </p>
+            <p>Turn messy opinions into clean claims that can actually be debated.</p>
           </article>
 
           <article class="feature-card" data-reveal>
             <span>06</span>
             <h3>Speech Practice</h3>
-            <p>
-              Available in Pro. Practice thinking and speaking under pressure.
-            </p>
+            <p>Pro mode for practicing clear speaking while under pressure.</p>
           </article>
-
         </div>
-
       </div>
     </section>
-
-    <!-- HOW IT WORKS -->
-
-    <section class="section">
-      <div class="container">
-
-        <div class="section-header" data-reveal>
-          <h2>
-            Simple input.<br />
-            High-pressure thinking practice.
-          </h2>
-        </div>
-
-        <div class="steps">
-
-          <article class="step-card" data-reveal>
-            <span>1</span>
-
-            <h3>Enter a topic</h3>
-
-            <p>
-              Type a belief, question, or controversial idea you want to explore.
-            </p>
-          </article>
-
-          <article class="step-card" data-reveal>
-            <span>2</span>
-
-            <h3>Choose a mode</h3>
-
-            <p>
-              Train logic, defense, evidence, fairness,
-              or claim structure.
-            </p>
-          </article>
-
-          <article class="step-card" data-reveal>
-            <span>3</span>
-
-            <h3>Improve your reasoning</h3>
-
-            <p>
-              Get guided pressure tests, drills,
-              scoring, and feedback loops.
-            </p>
-          </article>
-
-        </div>
-
-      </div>
-    </section>
-
-    <!-- SAVED -->
 
     <section class="section" id="saved">
       <div class="container">
-
         <div class="section-header" data-reveal>
-          <h2>
-            Save your thinking progress.
-          </h2>
-
+          <h2>Saved thinking, not just saved notes.</h2>
           <p>
-            DebateJam stores sessions locally on this device
-            in the free version.
+            Free sessions save locally on this device. Real accounts and team
+            sync would need a backend later.
           </p>
         </div>
 
         <div class="saved-shell">
-
           <div class="panel" data-reveal>
             <h3>Saved Sessions</h3>
-
-            <div class="saved-list" id="savedSessions">
-              <p class="muted">
-                Saved sessions will appear here on this device.
-              </p>
-            </div>
+            <div class="saved-list" id="savedSessions"></div>
+            <button type="button" class="btn btn-secondary" id="clearSavedBtn" style="margin-top: 18px;">Clear</button>
           </div>
 
           <div class="panel" data-reveal>
-
-            <h3>Why people return</h3>
-
-            <div class="card-grid" style="grid-template-columns: 1fr 1fr; margin-top: 20px;">
-
+            <div class="card-grid" style="grid-template-columns: 1fr 1fr;">
               <article class="feature-card">
-                <h3>Pressure Training</h3>
-
-                <p>
-                  Learn to think when challenged instead of freezing or repeating yourself.
-                </p>
+                <h3>Think Faster</h3>
+                <p>Practice forming clear arguments without freezing.</p>
               </article>
 
               <article class="feature-card">
-                <h3>Reasoning Memory</h3>
-
-                <p>
-                  Review past arguments and improve how you structure ideas over time.
-                </p>
+                <h3>Defend Better</h3>
+                <p>Respond to pressure without repeating the same point.</p>
               </article>
 
               <article class="feature-card">
-                <h3>Real-Life Skill</h3>
-
-                <p>
-                  DebateJam improves communication, persuasion,
-                  interviews, leadership, and discussion skills.
-                </p>
+                <h3>Spot Weak Logic</h3>
+                <p>Catch assumptions before your opponent does.</p>
               </article>
 
               <article class="feature-card">
-                <h3>Intellectual Honesty</h3>
-
-                <p>
-                  Learn when evidence is stronger than your original position.
-                </p>
+                <h3>Change Fairly</h3>
+                <p>Recognize when stronger evidence deserves a better view.</p>
               </article>
-
             </div>
-
           </div>
-
         </div>
-
       </div>
     </section>
 
-    <!-- PRICING -->
-
     <section class="section" id="pricing">
       <div class="container">
-
         <div class="section-header" data-reveal>
-          <h2>
-            Train free.<br />
-            Upgrade when you want deeper coaching.
-          </h2>
+          <h2>Prices made for practice.</h2>
+          <p>
+            Start free. Upgrade when you want unlimited debate rounds,
+            advanced coaching, reports, and team accounts.
+          </p>
         </div>
 
         <div class="pricing-grid">
-
           <article class="price-card" data-reveal>
-
             <h3>Free</h3>
-
-            <p>
-              Good for casual practice and improving everyday reasoning.
-            </p>
+            <p>For casual practice and everyday thinking improvement.</p>
 
             <div class="price">
               <strong>$0</strong>
-              <span>/ forever</span>
+              <span>/ week</span>
             </div>
 
             <ul>
@@ -553,19 +280,12 @@
               <li>Local saved sessions</li>
             </ul>
 
-            <button class="btn btn-secondary">
-              Start Free
-            </button>
-
+            <a href="#demo" class="btn btn-secondary">Start Free</a>
           </article>
 
           <article class="price-card pro" data-reveal>
-
             <h3>Pro</h3>
-
-            <p>
-              Designed for serious debaters, schools, teams, and speakers.
-            </p>
+            <p>For serious students, speakers, schools, and teams.</p>
 
             <div class="price">
               <strong>$12</strong>
@@ -576,60 +296,37 @@
               <li>Unlimited debates</li>
               <li>Advanced debate coaches</li>
               <li>Speech practice mode</li>
-              <li>School & team accounts</li>
+              <li>School and team accounts</li>
               <li>Export feedback reports</li>
             </ul>
 
-            <button class="btn btn-soft">
-              Upgrade to Pro
-            </button>
-
+            <a href="#demo" class="btn btn-soft">Upgrade</a>
           </article>
-
         </div>
-
       </div>
     </section>
-
-    <!-- FINAL CTA -->
 
     <section class="container">
       <div class="final-cta" data-reveal>
-
-        <h2>
-          Better thinking is trainable.
-        </h2>
-
-        <p>
-          DebateJam helps people explain ideas clearly,
-          defend them under pressure,
-          and improve them when evidence is stronger.
-        </p>
-
-        <a href="#demo" class="btn btn-primary">
-          Start Your First Debate
-        </a>
-
+        <div>
+          <h2>Train the way you think.</h2>
+          <p>
+            DebateJam helps you argue clearer, defend better,
+            and become honest enough to improve your own ideas.
+          </p>
+          <a href="#demo" class="btn btn-primary">Start Training</a>
+        </div>
       </div>
     </section>
-
   </main>
 
   <footer class="footer">
     <div class="container">
-
-      <div>
-        DebateJam © 2026
-      </div>
-
-      <div>
-        Think clearer. Argue better. Learn faster.
-      </div>
-
+      <div>DebateJam © 2026</div>
+      <div>Think clearer. Argue better.</div>
     </div>
   </footer>
 
   <script src="script.js"></script>
-
 </body>
 </html>
