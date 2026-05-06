@@ -1,283 +1,422 @@
+const modes = {
+  logic: {
+    name: "Logic Coach",
+    label: "Find weak reasoning",
+    focus: "clarity, assumptions, and logical gaps",
+    drills: [
+      "Separate your opinion from your actual claim.",
+      "Name one assumption your argument depends on.",
+      "Find the weakest link before someone else does."
+    ]
+  },
+  opponent: {
+    name: "Opponent Mode",
+    label: "Fight the strongest counterargument",
+    focus: "pressure, objections, and defense",
+    drills: [
+      "Answer the strongest possible objection.",
+      "Admit one fair point from the other side.",
+      "Defend your claim without repeating yourself."
+    ]
+  },
+  judge: {
+    name: "Judge Mode",
+    label: "Score both sides fairly",
+    focus: "balance, fairness, and decision-making",
+    drills: [
+      "Score the claim from 1–10.",
+      "Explain what evidence would change the result.",
+      "Separate confidence from proof."
+    ]
+  },
+  evidence: {
+    name: "Evidence Mode",
+    label: "Test proof quality",
+    focus: "examples, evidence, and credibility",
+    drills: [
+      "Give one real example that supports your claim.",
+      "Say what kind of evidence would weaken it.",
+      "Replace vague proof with specific proof."
+    ]
+  },
+  claim: {
+    name: "Claim Mode",
+    label: "Make the idea sharper",
+    focus: "precision, wording, and structure",
+    drills: [
+      "Rewrite your topic as one clear claim.",
+      "Remove emotional wording.",
+      "Make the claim specific enough to debate."
+    ]
+  }
+};
+
+const sampleTopics = [
+  "Schools should limit phone use during class.",
+  "AI tools make students better thinkers.",
+  "Homework should be optional.",
+  "Social media does more harm than good.",
+  "College should not be required for most careers.",
+  "Competitive sports build better discipline."
+];
+
+const state = {
+  activeMode: "logic",
+  weeklyUses: Number(localStorage.getItem("debatejam_weekly_uses")) || 0,
+  savedSessions: loadSessions()
+};
+
 document.addEventListener("DOMContentLoaded", () => {
-  const form = document.querySelector("#debateForm");
-  const topicInput = document.querySelector("#topic");
-  const stanceInput = document.querySelector("#stance");
-  const modeButtons = document.querySelectorAll(".mode-pill");
-  const useExampleBtn = document.querySelector("#useExample");
-  const copyBtn = document.querySelector("#copyFeedback");
-  const resetUsageBtn = document.querySelector("#resetUsage");
-  const proButton = document.querySelector("#proButton");
-  const usesLeftEl = document.querySelector("#usesLeft");
+  bindModeButtons();
+  bindDemoForm();
+  bindSampleButton();
+  bindCopyButton();
+  bindSaveButton();
+  bindResetButton();
+  renderUsage();
+  renderSavedSessions();
+  revealOnScroll();
+});
 
-  const emptyState = document.querySelector("#emptyState");
-  const loadingState = document.querySelector("#loadingState");
-  const resultState = document.querySelector("#resultState");
-
-  const resultMode = document.querySelector("#resultMode");
-  const resultTopic = document.querySelector("#resultTopic");
-  const finalScore = document.querySelector("#finalScore");
-  const openingText = document.querySelector("#openingText");
-  const oppositionText = document.querySelector("#oppositionText");
-  const logicText = document.querySelector("#logicText");
-  const counterText = document.querySelector("#counterText");
-  const evidenceText = document.querySelector("#evidenceText");
-  const pressureText = document.querySelector("#pressureText");
-  const heroScore = document.querySelector("#heroScore");
-
-  const STORAGE_KEY = "debateGymWeeklyUses";
-  const MAX_FREE_USES = 5;
-
-  const state = {
-    activeMode: "Logic Coach",
-    lastFeedback: "",
-    uses: loadUses()
-  };
-
-  updateUsesUI();
-  setupReveals();
-
-  modeButtons.forEach((button) => {
+function bindModeButtons() {
+  document.querySelectorAll("[data-mode]").forEach((button) => {
     button.addEventListener("click", () => {
       state.activeMode = button.dataset.mode;
-      modeButtons.forEach((item) => item.classList.remove("active"));
-      button.classList.add("active");
-
-      if (button.classList.contains("pro-only")) {
-        showToast("Speed Practice is a Pro feature. This demo still previews the workout style.");
-      }
+      document.querySelectorAll("[data-mode]").forEach((item) => {
+        item.classList.toggle("is-active", item.dataset.mode === state.activeMode);
+      });
+      updateModePreview();
     });
   });
+}
 
-  useExampleBtn.addEventListener("click", () => {
-    topicInput.value = "Should schools ban phones?";
-    stanceInput.value = "balanced";
-    topicInput.focus();
-  });
+function bindDemoForm() {
+  const form = document.querySelector("#debateForm");
+  if (!form) return;
 
   form.addEventListener("submit", (event) => {
     event.preventDefault();
 
-    const topic = topicInput.value.trim() || "Should schools ban phones?";
-    const stance = stanceInput.value;
+    const topicInput = document.querySelector("#topicInput");
+    const stanceInput = document.querySelector("#stanceInput");
 
-    if (state.uses >= MAX_FREE_USES && state.activeMode !== "Speed Practice") {
-      showToast("Free weekly limit reached. Reset the demo limit or upgrade to Pro in a real version.");
+    const topic = topicInput.value.trim();
+    const stance = stanceInput.value.trim();
+
+    if (!topic) {
+      showToast("Add a topic first.");
+      topicInput.focus();
       return;
     }
 
-    if (state.uses >= MAX_FREE_USES && state.activeMode === "Speed Practice") {
-      showToast("Speed Practice is Pro-only. Previewing one demo round.");
-    }
-
-    state.uses += 1;
-    saveUses(state.uses);
-    updateUsesUI();
-
-    showLoading();
-
-    window.setTimeout(() => {
-      const workout = createWorkout(topic, stance, state.activeMode);
-      renderWorkout(workout);
-      showToast("Workout generated. Start with the pressure question.");
-    }, 650);
+    createTrainingSession(topic, stance);
   });
+}
 
-  copyBtn.addEventListener("click", async () => {
-    if (!state.lastFeedback) {
-      showToast("Generate feedback first.");
+function bindSampleButton() {
+  const button = document.querySelector("#sampleTopicBtn");
+  const topicInput = document.querySelector("#topicInput");
+
+  if (!button || !topicInput) return;
+
+  button.addEventListener("click", () => {
+    const randomTopic = sampleTopics[Math.floor(Math.random() * sampleTopics.length)];
+    topicInput.value = randomTopic;
+    topicInput.focus();
+    showToast("Sample topic added.");
+  });
+}
+
+function bindCopyButton() {
+  const button = document.querySelector("#copySessionBtn");
+  if (!button) return;
+
+  button.addEventListener("click", async () => {
+    const output = document.querySelector("#sessionOutput");
+    if (!output || output.dataset.empty === "true") {
+      showToast("Generate a session first.");
       return;
     }
+
+    const text = output.innerText.trim();
 
     try {
-      await navigator.clipboard.writeText(state.lastFeedback);
-      showToast("Feedback copied.");
+      await navigator.clipboard.writeText(text);
+      showToast("Session copied.");
     } catch {
-      showToast("Copy failed. Select the text manually from the results.");
+      showToast("Copy failed. Select the text manually.");
     }
   });
+}
 
-  resetUsageBtn.addEventListener("click", () => {
-    state.uses = 0;
-    saveUses(0);
-    updateUsesUI();
-    showToast("Demo weekly limit reset.");
-  });
+function bindSaveButton() {
+  const button = document.querySelector("#saveSessionBtn");
+  if (!button) return;
 
-  proButton.addEventListener("click", () => {
-    showToast("Demo only: real Pro upgrades need Stripe Checkout and backend verification.");
-  });
-
-  function createWorkout(topic, stance, mode) {
-    const cleanTopic = escapeHTML(topic);
-    const stanceLabel = {
-      support: "support",
-      oppose: "oppose",
-      balanced: "argue both sides of"
-    }[stance] || "analyze";
-
-    const modeAdvice = {
-      "Logic Coach": {
-        logic: "Watch for broad claims, single-cause explanations, and emotional examples standing in for proof. Name the exact reason your conclusion follows.",
-        pressure: "What assumption must be true for your argument to work, and what would weaken that assumption?"
-      },
-      "Opponent": {
-        logic: "Your opponent will attack the weakest bridge between your claim and impact. Strengthen the warrant before adding more examples.",
-        pressure: "What is the fairest version of the other side, and why might a reasonable person believe it?"
-      },
-      "Judge": {
-        logic: "Compare harms, benefits, tradeoffs, and uncertainty. A judge rewards balance, not just confidence.",
-        pressure: "Which side wins if both sides have partly true evidence, and what standard should decide the round?"
-      },
-      "Evidence": {
-        logic: "Separate proof from assertion. Each major claim needs data, a credible example, or a clear reason it is likely true.",
-        pressure: "What exact evidence would change your mind on this topic?"
-      },
-      "Calm": {
-        logic: "Remove loaded language. Replace attacks with charitable framing and ask one clarifying question before rebutting.",
-        pressure: "How can you disagree without making the other person feel mocked, trapped, or dismissed?"
-      },
-      "Speed Practice": {
-        logic: "Compress the claim, reason, evidence, and impact into a 30-second answer. Cut anything decorative.",
-        pressure: "You have 20 seconds: state your strongest point, one proof, and one concession."
-      }
-    };
-
-    const chosen = modeAdvice[mode] || modeAdvice["Logic Coach"];
-    const baseScore = 72 + Math.floor(Math.random() * 21);
-    const score = mode === "Speed Practice" ? Math.min(96, baseScore + 3) : baseScore;
-
-    const opening = `To ${stanceLabel} “${cleanTopic},” start with one clear claim, then give one reason, one concrete example, and one impact. Avoid opening with a long history lesson. Your first sentence should tell listeners exactly what you believe.`;
-
-    const opposition = `The strongest opposing argument is not the loudest one. It likely focuses on unintended consequences, fairness, freedom, cost, enforcement, or edge cases that your side may be minimizing.`;
-
-    const counter = `Answer the best objection by conceding one fair point, narrowing your claim, then showing why your side still creates the better overall outcome.`;
-
-    const evidence = `Add at least one source type: a study, expert report, real-world example, survey, court case, school policy result, or measurable outcome. Label what the evidence proves and what it does not prove.`;
-
-    const feedback = [
-      `Debate Gym Workout`,
-      `Topic: ${topic}`,
-      `Mode: ${mode}`,
-      `Score: ${score}`,
-      ``,
-      `Opening: ${stripHTML(opening)}`,
-      `Opposition: ${stripHTML(opposition)}`,
-      `Logic: ${chosen.logic}`,
-      `Counterargument: ${counter}`,
-      `Evidence: ${evidence}`,
-      `Pressure Question: ${chosen.pressure}`
-    ].join("\n");
-
-    return {
-      topic: cleanTopic,
-      mode,
-      score,
-      opening,
-      opposition,
-      logic: chosen.logic,
-      counter,
-      evidence,
-      pressure: chosen.pressure,
-      feedback
-    };
-  }
-
-  function renderWorkout(workout) {
-    resultMode.textContent = workout.mode;
-    resultTopic.textContent = workout.topic;
-    finalScore.textContent = workout.score;
-    heroScore.textContent = workout.score;
-
-    openingText.innerHTML = workout.opening;
-    oppositionText.textContent = workout.opposition;
-    logicText.textContent = workout.logic;
-    counterText.textContent = workout.counter;
-    evidenceText.textContent = workout.evidence;
-    pressureText.textContent = workout.pressure;
-
-    state.lastFeedback = workout.feedback;
-
-    loadingState.classList.add("hidden");
-    emptyState.classList.add("hidden");
-    resultState.classList.remove("hidden");
-  }
-
-  function showLoading() {
-    emptyState.classList.add("hidden");
-    resultState.classList.add("hidden");
-    loadingState.classList.remove("hidden");
-  }
-
-  function loadUses() {
-    try {
-      const saved = JSON.parse(localStorage.getItem(STORAGE_KEY));
-      if (!saved || typeof saved.count !== "number") return 0;
-
-      const savedDate = new Date(saved.date);
-      const now = new Date();
-      const daysSince = Math.floor((now - savedDate) / (1000 * 60 * 60 * 24));
-
-      return daysSince >= 7 ? 0 : saved.count;
-    } catch {
-      return 0;
-    }
-  }
-
-  function saveUses(count) {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify({
-      count,
-      date: new Date().toISOString()
-    }));
-  }
-
-  function updateUsesUI() {
-    const usesLeft = Math.max(0, MAX_FREE_USES - state.uses);
-    usesLeftEl.textContent = usesLeft;
-  }
-
-  function showToast(message) {
-    const toast = document.querySelector("#toast");
-    toast.textContent = message;
-    toast.classList.add("show");
-
-    window.clearTimeout(showToast.timer);
-    showToast.timer = window.setTimeout(() => {
-      toast.classList.remove("show");
-    }, 3300);
-  }
-
-  function setupReveals() {
-    const revealEls = document.querySelectorAll(".reveal");
-
-    if (!("IntersectionObserver" in window)) {
-      revealEls.forEach((el) => el.classList.add("visible"));
+  button.addEventListener("click", () => {
+    const output = document.querySelector("#sessionOutput");
+    if (!output || output.dataset.empty === "true") {
+      showToast("Generate a session first.");
       return;
     }
 
-    const observer = new IntersectionObserver((entries) => {
+    const session = {
+      id: crypto.randomUUID ? crypto.randomUUID() : String(Date.now()),
+      mode: modes[state.activeMode].name,
+      title: document.querySelector("#generatedTitle")?.textContent || "DebateJam Session",
+      summary: output.innerText.trim(),
+      createdAt: new Date().toLocaleDateString()
+    };
+
+    state.savedSessions.unshift(session);
+    state.savedSessions = state.savedSessions.slice(0, 5);
+    localStorage.setItem("debatejam_sessions", JSON.stringify(state.savedSessions));
+    renderSavedSessions();
+    showToast("Session saved on this device.");
+  });
+}
+
+function bindResetButton() {
+  const button = document.querySelector("#resetSessionBtn");
+  if (!button) return;
+
+  button.addEventListener("click", () => {
+    const form = document.querySelector("#debateForm");
+    const output = document.querySelector("#sessionOutput");
+
+    if (form) form.reset();
+
+    if (output) {
+      output.dataset.empty = "true";
+      output.innerHTML = `
+        <div class="empty-state">
+          <span>Debate arena waiting</span>
+          <p>Enter a topic and choose a mode to generate your first training round.</p>
+        </div>
+      `;
+    }
+
+    showToast("Session cleared.");
+  });
+}
+
+function updateModePreview() {
+  const mode = modes[state.activeMode];
+  const preview = document.querySelector("#modePreview");
+
+  if (!preview || !mode) return;
+
+  preview.innerHTML = `
+    <span>${escapeHTML(mode.name)}</span>
+    <strong>${escapeHTML(mode.label)}</strong>
+    <p>This round focuses on ${escapeHTML(mode.focus)}.</p>
+  `;
+}
+
+function createTrainingSession(topic, stance) {
+  const output = document.querySelector("#sessionOutput");
+  if (!output) return;
+
+  const mode = modes[state.activeMode];
+  const score = generateScore(topic, stance);
+  const cleanTopic = escapeHTML(topic);
+  const cleanStance = stance ? escapeHTML(stance) : "Not stated yet";
+
+  state.weeklyUses += 1;
+  localStorage.setItem("debatejam_weekly_uses", String(state.weeklyUses));
+  renderUsage();
+
+  output.dataset.empty = "false";
+  output.innerHTML = `
+    <article class="training-session">
+      <div class="session-topline">
+        <span>${escapeHTML(mode.name)}</span>
+        <span>Score ${score}/100</span>
+      </div>
+
+      <h3 id="generatedTitle">${cleanTopic}</h3>
+
+      <div class="session-grid">
+        <div>
+          <small>Your stance</small>
+          <p>${cleanStance}</p>
+        </div>
+        <div>
+          <small>Main focus</small>
+          <p>${escapeHTML(mode.focus)}</p>
+        </div>
+      </div>
+
+      <div class="coach-card">
+        <small>Opening move</small>
+        <p>${buildOpeningMove(topic, stance)}</p>
+      </div>
+
+      <div class="coach-card">
+        <small>Counterpressure</small>
+        <p>${buildCounterArgument(topic)}</p>
+      </div>
+
+      <div class="coach-card">
+        <small>Coach drills</small>
+        <ul>
+          ${mode.drills.map((drill) => `<li>${escapeHTML(drill)}</li>`).join("")}
+        </ul>
+      </div>
+
+      <div class="coach-card">
+        <small>Next improvement</small>
+        <p>${buildImprovement(score)}</p>
+      </div>
+    </article>
+  `;
+
+  showToast(`${mode.name} session generated.`);
+}
+
+function buildOpeningMove(topic, stance) {
+  const claim = stance || `Take a clear position on "${topic}"`;
+  return `Start with one precise claim: “${escapeHTML(claim)}.” Then support it with one reason, one example, and one limit where your claim may not apply.`;
+}
+
+function buildCounterArgument(topic) {
+  return `A strong opponent would ask: “What evidence would prove that your view on ${escapeHTML(topic)} is wrong?” Prepare an answer before defending your position.`;
+}
+
+function buildImprovement(score) {
+  if (score >= 82) {
+    return "Your argument has a strong shape. Now improve it by naming the best counterargument fairly before you respond.";
+  }
+
+  if (score >= 68) {
+    return "Your idea is usable, but it needs sharper proof. Add a concrete example and remove any vague claim that sounds true but is unsupported.";
+  }
+
+  return "Your argument needs structure first. Rewrite it as: claim → reason → evidence → counterargument → response.";
+}
+
+function generateScore(topic, stance) {
+  let score = 58;
+
+  if (topic.length > 25) score += 10;
+  if (stance.length > 20) score += 12;
+  if (/\bbecause\b|\bsince\b|\btherefore\b|\bevidence\b/i.test(stance)) score += 10;
+  if (/\balways\b|\bnever\b|\beveryone\b|\bnobody\b/i.test(stance)) score -= 8;
+
+  return Math.max(42, Math.min(96, score));
+}
+
+function renderUsage() {
+  const usageText = document.querySelector("#usageText");
+  const usageBar = document.querySelector("#usageBar");
+
+  const freeLimit = 5;
+  const used = Math.min(state.weeklyUses, freeLimit);
+  const percentage = (used / freeLimit) * 100;
+
+  if (usageText) {
+    usageText.textContent = `${used}/${freeLimit} free weekly practices used`;
+  }
+
+  if (usageBar) {
+    usageBar.style.width = `${percentage}%`;
+  }
+}
+
+function renderSavedSessions() {
+  const list = document.querySelector("#savedSessions");
+  if (!list) return;
+
+  if (!state.savedSessions.length) {
+    list.innerHTML = `<p class="muted">Saved sessions will appear here on this device.</p>`;
+    return;
+  }
+
+  list.innerHTML = state.savedSessions
+    .map(
+      (session) => `
+      <button class="saved-session" type="button" data-session-id="${escapeHTML(session.id)}">
+        <span>${escapeHTML(session.mode)}</span>
+        <strong>${escapeHTML(session.title)}</strong>
+        <small>${escapeHTML(session.createdAt)}</small>
+      </button>
+    `
+    )
+    .join("");
+
+  list.querySelectorAll("[data-session-id]").forEach((button) => {
+    button.addEventListener("click", () => {
+      const session = state.savedSessions.find((item) => item.id === button.dataset.sessionId);
+      if (!session) return;
+
+      const output = document.querySelector("#sessionOutput");
+      if (!output) return;
+
+      output.dataset.empty = "false";
+      output.innerHTML = `
+        <article class="training-session">
+          <div class="session-topline">
+            <span>${escapeHTML(session.mode)}</span>
+            <span>${escapeHTML(session.createdAt)}</span>
+          </div>
+          <h3 id="generatedTitle">${escapeHTML(session.title)}</h3>
+          <pre class="session-note">${escapeHTML(session.summary)}</pre>
+        </article>
+      `;
+
+      showToast("Saved session opened.");
+    });
+  });
+}
+
+function loadSessions() {
+  try {
+    return JSON.parse(localStorage.getItem("debatejam_sessions")) || [];
+  } catch {
+    return [];
+  }
+}
+
+function revealOnScroll() {
+  const items = document.querySelectorAll("[data-reveal]");
+
+  if (!items.length || !("IntersectionObserver" in window)) {
+    items.forEach((item) => item.classList.add("is-visible"));
+    return;
+  }
+
+  const observer = new IntersectionObserver(
+    (entries) => {
       entries.forEach((entry) => {
-        if (entry.isIntersecting) {
-          entry.target.classList.add("visible");
-          observer.unobserve(entry.target);
-        }
+        if (!entry.isIntersecting) return;
+        entry.target.classList.add("is-visible");
+        observer.unobserve(entry.target);
       });
-    }, { threshold: 0.12 });
+    },
+    { threshold: 0.15 }
+  );
 
-    revealEls.forEach((el) => observer.observe(el));
-  }
+  items.forEach((item) => observer.observe(item));
+}
 
-  function escapeHTML(value) {
-    return String(value)
-      .replaceAll("&", "&amp;")
-      .replaceAll("<", "&lt;")
-      .replaceAll(">", "&gt;")
-      .replaceAll('"', "&quot;")
-      .replaceAll("'", "&#039;");
-  }
+function showToast(message) {
+  const toast = document.querySelector("#toast");
+  if (!toast) return;
 
-  function stripHTML(value) {
-    const div = document.createElement("div");
-    div.innerHTML = value;
-    return div.textContent || div.innerText || "";
-  }
-});
+  toast.textContent = message;
+  toast.classList.add("is-visible");
+
+  clearTimeout(showToast.timeout);
+  showToast.timeout = setTimeout(() => {
+    toast.classList.remove("is-visible");
+  }, 2200);
+}
+
+function escapeHTML(value) {
+  return String(value)
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;")
+    .replaceAll("'", "&#039;");
+}
