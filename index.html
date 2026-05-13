@@ -3,329 +3,139 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>DebateJam — Train Your Thinking</title>
-  <meta name="description" content="DebateJam turns any topic into a debate training session for clearer arguments, stronger evidence, and better thinking under pressure." />
+  <title>ATLAS | Fantasy Math RPG</title>
+
   <link rel="stylesheet" href="style.css" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;800&family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
 </head>
+
 <body>
-  <div class="toast" id="toast"></div>
+  <main class="page">
+    <div class="background-glow"></div>
+    <div class="background-grid"></div>
 
-  <nav class="nav">
-    <a href="#" class="logo">DebateJam</a>
-
-    <div class="nav-links">
-      <a href="#demo">Practice</a>
-      <a href="#modes">Modes</a>
-      <a href="#pricing">Prices</a>
-      <a href="#saved">Saved</a>
-    </div>
-
-    <a href="#demo" class="btn btn-primary">Start</a>
-  </nav>
-
-  <main>
-    <section class="hero">
-      <div class="container hero-grid">
-        <div data-reveal>
-          <div class="kicker">Argument training system</div>
-
-          <h1>
-            Debate<br />
-            <span>Jam</span>
-          </h1>
-
-          <p class="hero-copy">
-            “Most people have opinions. DebateJam trains the skill behind them:
-            explaining clearly, defending calmly, spotting weak logic, and changing
-            your mind when stronger evidence appears.”
-          </p>
-
-          <div class="hero-actions">
-            <a href="#demo" class="btn btn-primary">Read More</a>
-            <a href="#modes" class="btn btn-secondary">Explore Modes</a>
-          </div>
-        </div>
-
-        <div class="arena" data-reveal>
-          <div class="debate-stack">
-            <article class="debate-card">
-              <small>#99CDD8</small>
-              <strong>Claim Mode</strong>
-            </article>
-
-            <article class="debate-card">
-              <small>#DAEBE3</small>
-              <strong>Evidence Mode</strong>
-            </article>
-
-            <article class="debate-card">
-              <small>#FDE8D3</small>
-              <strong>Judge Mode</strong>
-            </article>
-
-            <article class="debate-card">
-              <small>#F3C3B2</small>
-              <strong>Opponent Mode</strong>
-            </article>
-
-            <article class="debate-card">
-              <small>#CFD8C4</small>
-              <strong>Logic Coach</strong>
-            </article>
-
-            <article class="debate-card dark">
-              <small>#657166</small>
-              <strong>Pressure Practice</strong>
-            </article>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <section class="section" id="demo">
-      <div class="container">
-        <div class="section-header" data-reveal>
-          <h2>Sounds like clear thinking.</h2>
-          <p>
-            Type a topic, choose a training mode, and DebateJam turns it into
-            a focused practice round with scoring, counterpressure, and coaching drills.
-          </p>
-        </div>
-
-        <div class="demo-shell">
-          <div class="panel" data-reveal>
-            <form id="debateForm">
-              <div class="field">
-                <label for="topicInput">Debate topic</label>
-                <textarea id="topicInput" placeholder="Example: Schools should limit phone use during class."></textarea>
-              </div>
-
-              <div class="field">
-                <label for="stanceInput">Your current stance</label>
-                <input id="stanceInput" type="text" placeholder="Example: It helps students focus because..." />
-              </div>
-
-              <div class="field">
-                <label>Choose mode</label>
-                <div class="mode-grid">
-                  <button type="button" class="mode-btn is-active" data-mode="logic">Logic</button>
-                  <button type="button" class="mode-btn" data-mode="opponent">Opponent</button>
-                  <button type="button" class="mode-btn" data-mode="judge">Judge</button>
-                  <button type="button" class="mode-btn" data-mode="evidence">Evidence</button>
-                  <button type="button" class="mode-btn" data-mode="claim">Claim</button>
-                </div>
-              </div>
-
-              <div class="form-actions">
-                <button type="submit" class="btn btn-primary">Generate</button>
-                <button type="button" class="btn btn-soft" id="sampleTopicBtn">Sample</button>
-                <button type="button" class="btn btn-secondary" id="resetSessionBtn">Reset</button>
-              </div>
-            </form>
-
-            <div class="mode-preview" id="modePreview"></div>
-          </div>
-
-          <div class="panel output-panel" data-reveal>
-            <div class="output-head">
-              <div>
-                <h3>Practice Output</h3>
-                <p>Feedback appears here after you generate a session.</p>
-              </div>
-
-              <div class="usage">
-                <p id="usageText">0/5 free weekly practices used</p>
-                <div class="usage-track">
-                  <span class="usage-fill" id="usageBar"></span>
-                </div>
-              </div>
-            </div>
-
-            <div id="sessionOutput" data-empty="true">
-              <div class="empty-state">
-                <div>
-                  <span>Debate arena waiting</span>
-                  <p>Enter a topic, choose a mode, and generate a clean training round.</p>
-                </div>
-              </div>
-            </div>
-
-            <div class="output-actions" style="margin-top: 22px;">
-              <button type="button" class="btn btn-primary" id="saveSessionBtn">Save</button>
-              <button type="button" class="btn btn-secondary" id="copySessionBtn">Copy</button>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <section class="section" id="modes">
-      <div class="container">
-        <div class="section-header" data-reveal>
-          <h2>Magical experience for arguments.</h2>
-          <p>
-            Each mode trains a different thinking muscle, from evidence quality
-            to fair judging and pressure defense.
-          </p>
-        </div>
-
-        <div class="card-grid">
-          <article class="feature-card" data-reveal>
-            <span>01</span>
-            <h3>Logic Coach</h3>
-            <p>Spot weak assumptions, vague claims, and broken reasoning.</p>
-          </article>
-
-          <article class="feature-card" data-reveal>
-            <span>02</span>
-            <h3>Opponent Mode</h3>
-            <p>Practice defending your idea against the strongest counterargument.</p>
-          </article>
-
-          <article class="feature-card" data-reveal>
-            <span>03</span>
-            <h3>Judge Mode</h3>
-            <p>Score both sides fairly and learn what actually makes a case stronger.</p>
-          </article>
-
-          <article class="feature-card" data-reveal>
-            <span>04</span>
-            <h3>Evidence Mode</h3>
-            <p>Upgrade weak proof into specific examples, facts, and credibility.</p>
-          </article>
-
-          <article class="feature-card" data-reveal>
-            <span>05</span>
-            <h3>Claim Mode</h3>
-            <p>Turn messy opinions into clean claims that can actually be debated.</p>
-          </article>
-
-          <article class="feature-card" data-reveal>
-            <span>06</span>
-            <h3>Speech Practice</h3>
-            <p>Pro mode for practicing clear speaking while under pressure.</p>
-          </article>
-        </div>
-      </div>
-    </section>
-
-    <section class="section" id="saved">
-      <div class="container">
-        <div class="section-header" data-reveal>
-          <h2>Saved thinking, not just saved notes.</h2>
-          <p>
-            Free sessions save locally on this device. Real accounts and team
-            sync would need a backend later.
-          </p>
-        </div>
-
-        <div class="saved-shell">
-          <div class="panel" data-reveal>
-            <h3>Saved Sessions</h3>
-            <div class="saved-list" id="savedSessions"></div>
-            <button type="button" class="btn btn-secondary" id="clearSavedBtn" style="margin-top: 18px;">Clear</button>
-          </div>
-
-          <div class="panel" data-reveal>
-            <div class="card-grid" style="grid-template-columns: 1fr 1fr;">
-              <article class="feature-card">
-                <h3>Think Faster</h3>
-                <p>Practice forming clear arguments without freezing.</p>
-              </article>
-
-              <article class="feature-card">
-                <h3>Defend Better</h3>
-                <p>Respond to pressure without repeating the same point.</p>
-              </article>
-
-              <article class="feature-card">
-                <h3>Spot Weak Logic</h3>
-                <p>Catch assumptions before your opponent does.</p>
-              </article>
-
-              <article class="feature-card">
-                <h3>Change Fairly</h3>
-                <p>Recognize when stronger evidence deserves a better view.</p>
-              </article>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <section class="section" id="pricing">
-      <div class="container">
-        <div class="section-header" data-reveal>
-          <h2>Prices made for practice.</h2>
-          <p>
-            Start free. Upgrade when you want unlimited debate rounds,
-            advanced coaching, reports, and team accounts.
-          </p>
-        </div>
-
-        <div class="pricing-grid">
-          <article class="price-card" data-reveal>
-            <h3>Free</h3>
-            <p>For casual practice and everyday thinking improvement.</p>
-
-            <div class="price">
-              <strong>$0</strong>
-              <span>/ week</span>
-            </div>
-
-            <ul>
-              <li>5 debate practices per week</li>
-              <li>Basic scoring</li>
-              <li>Core training modes</li>
-              <li>Local saved sessions</li>
-            </ul>
-
-            <a href="#demo" class="btn btn-secondary">Start Free</a>
-          </article>
-
-          <article class="price-card pro" data-reveal>
-            <h3>Pro</h3>
-            <p>For serious students, speakers, schools, and teams.</p>
-
-            <div class="price">
-              <strong>$12</strong>
-              <span>/ month</span>
-            </div>
-
-            <ul>
-              <li>Unlimited debates</li>
-              <li>Advanced debate coaches</li>
-              <li>Speech practice mode</li>
-              <li>School and team accounts</li>
-              <li>Export feedback reports</li>
-            </ul>
-
-            <a href="#demo" class="btn btn-soft">Upgrade</a>
-          </article>
-        </div>
-      </div>
-    </section>
-
-    <section class="container">
-      <div class="final-cta" data-reveal>
+    <header class="site-header">
+      <a href="#" class="logo">
+        <div class="logo-mark">✦</div>
         <div>
-          <h2>Train the way you think.</h2>
-          <p>
-            DebateJam helps you argue clearer, defend better,
-            and become honest enough to improve your own ideas.
-          </p>
-          <a href="#demo" class="btn btn-primary">Start Training</a>
+          <h1>ATLAS</h1>
+          <p>Academy RPG</p>
+        </div>
+      </a>
+
+      <nav class="nav-links">
+        <a href="#paths">Paths</a>
+        <a href="#combat">Combat</a>
+        <a href="#start">Start</a>
+      </nav>
+    </header>
+
+    <section class="hero">
+      <div class="hero-copy">
+        <div class="eyebrow">
+          <span>✧</span>
+          Math powers every spell, block, combo, and boss mechanic.
+        </div>
+
+        <h2>Enter the dark academy of numbers.</h2>
+
+        <p class="hero-text">
+          Choose your path, master tactical combat, and solve math under pressure
+          to unleash magic, raise shields, and defeat ancient exam-beasts.
+        </p>
+
+        <div class="hero-actions" id="start">
+          <button class="primary-btn">
+            Begin Your Trial
+            <span>→</span>
+          </button>
+
+          <button class="secondary-btn">
+            Watch Combat Preview
+          </button>
         </div>
       </div>
+
+      <div class="hero-panel" id="paths">
+        <div class="panel-glow"></div>
+
+        <article class="stack-card card-dark">
+          <div class="card-icon">✦</div>
+          <div>
+            <h3>Wizard Path</h3>
+            <p>Elements · ranged spells · knowledge chains</p>
+          </div>
+        </article>
+
+        <article class="stack-card card-violet offset">
+          <div class="card-icon">🛡</div>
+          <div>
+            <h3>Paladin Path</h3>
+            <p>Armor · blocks · counters · discipline</p>
+          </div>
+        </article>
+
+        <article class="stack-card card-purple">
+          <div class="card-icon">⚔</div>
+          <div>
+            <h3>Combat Trials</h3>
+            <p>Solve fast to strike, defend, and combo</p>
+          </div>
+        </article>
+
+        <article class="stack-card card-rose offset">
+          <div class="card-icon">◆</div>
+          <div>
+            <h3>Living Lessons</h3>
+            <p>Fractions, equations, geometry, strategy</p>
+          </div>
+        </article>
+
+        <article class="trial-card">
+          <p class="trial-label">Next Trial</p>
+          <div class="trial-content">
+            <div>
+              <h3>The Gate of Proof</h3>
+              <p>
+                Choose the correct expression to break the rune shield before
+                the boss charges.
+              </p>
+            </div>
+            <div class="trial-orb">✧</div>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <section class="info-grid" id="combat">
+      <article>
+        <span>01</span>
+        <h3>Pick a class</h3>
+        <p>
+          Wizard or Paladin changes your attacks, defenses, gear, and math pressure.
+        </p>
+      </article>
+
+      <article>
+        <span>02</span>
+        <h3>Solve to act</h3>
+        <p>
+          Every correct answer becomes a meaningful combat decision, not a worksheet pop-up.
+        </p>
+      </article>
+
+      <article>
+        <span>03</span>
+        <h3>Master bosses</h3>
+        <p>
+          Bosses use shields, phases, counters, and mechanics that reward strategy.
+        </p>
+      </article>
     </section>
   </main>
-
-  <footer class="footer">
-    <div class="container">
-      <div>DebateJam © 2026</div>
-      <div>Think clearer. Argue better.</div>
-    </div>
-  </footer>
 
   <script src="script.js"></script>
 </body>
