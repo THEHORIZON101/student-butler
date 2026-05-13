@@ -4,135 +4,109 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>ATLAS | Fantasy Math RPG</title>
-
   <link rel="stylesheet" href="style.css" />
-
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;800&family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
 </head>
 
 <body>
-  <main class="page">
-    <div class="background-glow"></div>
-    <div class="background-grid"></div>
+  <main class="atlas-page">
+    <div class="atlas-bg"></div>
+    <div class="atlas-vignette"></div>
 
-    <header class="site-header">
-      <a href="#" class="logo">
-        <div class="logo-mark">✦</div>
+    <header class="atlas-header">
+      <div class="atlas-logo">
+        <div class="atlas-logo-icon">✦</div>
         <div>
-          <h1>ATLAS</h1>
-          <p>Academy RPG</p>
+          <div class="atlas-logo-text">ATLAS</div>
+          <div class="atlas-logo-subtitle">Academy RPG</div>
         </div>
-      </a>
+      </div>
 
-      <nav class="nav-links">
+      <nav class="atlas-nav">
         <a href="#paths">Paths</a>
         <a href="#combat">Combat</a>
         <a href="#start">Start</a>
       </nav>
     </header>
 
-    <section class="hero">
-      <div class="hero-copy">
-        <div class="eyebrow">
-          <span>✧</span>
-          Math powers every spell, block, combo, and boss mechanic.
-        </div>
+    <section class="atlas-hero">
+      <div class="atlas-copy">
+        <div class="atlas-kicker">✦ Math powers every spell, block, combo, and boss mechanic.</div>
 
-        <h2>Enter the dark academy of numbers.</h2>
+        <h1 class="atlas-title">Enter the dark academy of numbers.</h1>
 
-        <p class="hero-text">
+        <p class="atlas-description">
           Choose your path, master tactical combat, and solve math under pressure
           to unleash magic, raise shields, and defeat ancient exam-beasts.
         </p>
 
-        <div class="hero-actions" id="start">
-          <button class="primary-btn">
-            Begin Your Trial
-            <span>→</span>
-          </button>
-
-          <button class="secondary-btn">
-            Watch Combat Preview
-          </button>
+        <div class="atlas-buttons" id="start">
+          <button class="atlas-btn atlas-btn-main">Begin Your Trial →</button>
+          <button class="atlas-btn atlas-btn-ghost">Watch Combat Preview</button>
         </div>
       </div>
 
-      <div class="hero-panel" id="paths">
-        <div class="panel-glow"></div>
+      <div class="atlas-stack" id="paths">
+        <div class="atlas-stack-glow"></div>
 
-        <article class="stack-card card-dark">
-          <div class="card-icon">✦</div>
+        <article class="atlas-card atlas-card-1">
+          <span>✦</span>
           <div>
-            <h3>Wizard Path</h3>
+            <h2>Wizard Path</h2>
             <p>Elements · ranged spells · knowledge chains</p>
           </div>
         </article>
 
-        <article class="stack-card card-violet offset">
-          <div class="card-icon">🛡</div>
+        <article class="atlas-card atlas-card-2">
+          <span>🛡</span>
           <div>
-            <h3>Paladin Path</h3>
+            <h2>Paladin Path</h2>
             <p>Armor · blocks · counters · discipline</p>
           </div>
         </article>
 
-        <article class="stack-card card-purple">
-          <div class="card-icon">⚔</div>
+        <article class="atlas-card atlas-card-3">
+          <span>⚔</span>
           <div>
-            <h3>Combat Trials</h3>
+            <h2>Combat Trials</h2>
             <p>Solve fast to strike, defend, and combo</p>
           </div>
         </article>
 
-        <article class="stack-card card-rose offset">
-          <div class="card-icon">◆</div>
+        <article class="atlas-card atlas-card-4">
+          <span>◆</span>
           <div>
-            <h3>Living Lessons</h3>
-            <p>Fractions, equations, geometry, strategy</p>
+            <h2>Living Lessons</h2>
+            <p>Fractions · equations · geometry · strategy</p>
           </div>
         </article>
 
-        <article class="trial-card">
-          <p class="trial-label">Next Trial</p>
-          <div class="trial-content">
-            <div>
-              <h3>The Gate of Proof</h3>
-              <p>
-                Choose the correct expression to break the rune shield before
-                the boss charges.
-              </p>
-            </div>
-            <div class="trial-orb">✧</div>
+        <article class="atlas-card atlas-card-5">
+          <span>✧</span>
+          <div>
+            <h2>The Gate of Proof</h2>
+            <p>Break the rune shield before the boss charges.</p>
           </div>
         </article>
       </div>
     </section>
 
-    <section class="info-grid" id="combat">
+    <section class="atlas-info" id="combat">
       <article>
-        <span>01</span>
-        <h3>Pick a class</h3>
-        <p>
-          Wizard or Paladin changes your attacks, defenses, gear, and math pressure.
-        </p>
+        <b>01</b>
+        <h2>Pick a class</h2>
+        <p>Wizard or Paladin changes your attacks, defenses, gear, and math pressure.</p>
       </article>
 
       <article>
-        <span>02</span>
-        <h3>Solve to act</h3>
-        <p>
-          Every correct answer becomes a meaningful combat decision, not a worksheet pop-up.
-        </p>
+        <b>02</b>
+        <h2>Solve to act</h2>
+        <p>Every correct answer becomes a real combat decision, not a worksheet pop-up.</p>
       </article>
 
       <article>
-        <span>03</span>
-        <h3>Master bosses</h3>
-        <p>
-          Bosses use shields, phases, counters, and mechanics that reward strategy.
-        </p>
+        <b>03</b>
+        <h2>Master bosses</h2>
+        <p>Bosses use shields, phases, counters, and mechanics that reward strategy.</p>
       </article>
     </section>
   </main>
