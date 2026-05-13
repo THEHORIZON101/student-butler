@@ -1,31 +1,19 @@
-const buttons = document.querySelectorAll("button");
+const atlasCards = document.querySelectorAll(".atlas-card, .atlas-info article");
 
-buttons.forEach((button) => {
-  button.addEventListener("mousemove", (event) => {
-    const rect = button.getBoundingClientRect();
-    const x = event.clientX - rect.left;
-    const y = event.clientY - rect.top;
-
-    button.style.setProperty("--mouse-x", `${x}px`);
-    button.style.setProperty("--mouse-y", `${y}px`);
-  });
-});
-
-const cards = document.querySelectorAll(".stack-card, .trial-card, .info-grid article");
-
-const observer = new IntersectionObserver(
+const atlasObserver = new IntersectionObserver(
   (entries) => {
     entries.forEach((entry) => {
       if (entry.isIntersecting) {
-        entry.target.classList.add("is-visible");
+        entry.target.style.opacity = "1";
+        entry.target.style.transform += " translateY(0)";
       }
     });
   },
-  {
-    threshold: 0.2,
-  }
+  { threshold: 0.15 }
 );
 
-cards.forEach((card) => {
-  observer.observe(card);
+atlasCards.forEach((card) => {
+  card.style.opacity = "0";
+  card.style.transition = "opacity 0.7s ease, transform 0.7s ease";
+  atlasObserver.observe(card);
 });
